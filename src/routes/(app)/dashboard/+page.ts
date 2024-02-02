@@ -5,7 +5,7 @@ export const load = async ({ parent }) => {
 
 	const user = await getAuthUser();
 
-	if (user) {
-		redirect(301, '/dashboard');
+	if (!user) {
+		redirect(301, '/login');
 	}
 };
