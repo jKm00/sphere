@@ -3,6 +3,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
 	import { auth } from '$lib/firebase.client';
+	import { authSchema } from '$lib/schemas';
 	import { session } from '$lib/session';
 	import { FirebaseError } from 'firebase/app';
 	import { createUserWithEmailAndPassword } from 'firebase/auth';
@@ -12,13 +13,29 @@
 	let password = '';
 
 	let isLoading = false;
+	let emailError = '';
+	let passwordError = '';
 	let errorMsg = '';
 
 	async function handleSubmit() {
 		isLoading = true;
+		emailError = '';
+		passwordError = '';
 		errorMsg = '';
 
-		// TODO: Validate
+		const result = authSchema.safeParse({ email, password });
+
+		if (!result.success) {
+			result.error.issues.forEach((issue) => {
+				if (issue.path[0] === 'email') {
+					emailError = issue.message;
+				} else if (issue.path[0] === 'password') {
+					passwordError = issue.message;
+				}
+			});
+			isLoading = false;
+			return;
+		}
 
 		try {
 			await registerWithEmail(email, password);
@@ -70,10 +87,30 @@
 	<a href="/login" class="text-sm">Login</a>
 </header>
 <div class="flex flex-grow items-center justify-center">
-	<form on:submit|preventDefault={handleSubmit} class="width grid gap-2">
+	<form on:submit|preventDefault={handleSubmit} class="width grid gap-4">
 		<h1 class="mb-4 text-center text-3xl font-bold">Register</h1>
-		<Input bind:value={email} class="w-full" type="email" placeholder="name@example.com" />
-		<Input bind:value={password} type="password" placeholder="**********" />
+		<div>
+			<Input
+				bind:value={email}
+				class={emailError ? 'border-destructive' : ''}
+				type="email"
+				placeholder="name@example.com"
+			/>
+			{#if emailError}
+				<p class="text-xs text-destructive">{emailError}</p>
+			{/if}
+		</div>
+		<div>
+			<Input
+				bind:value={password}
+				class={passwordError ? 'border-destructive' : ''}
+				type="password"
+				placeholder="**********"
+			/>
+			{#if passwordError}
+				<p class="text-xs text-destructive">{passwordError}</p>
+			{/if}
+		</div>
 		<Button class="grid grid-cols-3" type="submit">
 			<Loader2 class={`animate-spin ${isLoading ? '' : 'opacity-0'}`} />
 			Create account

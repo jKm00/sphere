@@ -1,5 +1,6 @@
 import { browser } from '$app/environment';
 import { auth, initizalizeFirebase } from '$lib/firebase.client';
+import { session } from '$lib/session';
 import { onAuthStateChanged } from 'firebase/auth';
 
 export const load = async () => {
@@ -10,6 +11,24 @@ export const load = async () => {
 			console.log(error);
 		}
 	}
+
+	onAuthStateChanged(auth, (user) => {
+		if (user) {
+			session.update((cur) => ({
+				...cur,
+				user,
+				loading: false,
+				loggedIn: true
+			}));
+		} else {
+			session.update((cur) => ({
+				...cur,
+				user: null,
+				loading: false,
+				loggedIn: false
+			}));
+		}
+	});
 
 	function getAuthUser() {
 		return new Promise((resolve) => {

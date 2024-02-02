@@ -5,6 +5,7 @@ type User = {
 	displayName?: string | null;
 	photoURL?: string | null;
 	uid?: string | null;
+	emailVerified?: boolean;
 };
 
 export type SessionState = {
