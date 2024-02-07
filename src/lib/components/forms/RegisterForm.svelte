@@ -4,10 +4,12 @@
 	import { superForm } from 'sveltekit-superforms/client';
 	import { Input } from '$lib/components/ui/input';
 	import { Button } from '$lib/components/ui/button';
+	import { Loader, Loader2 } from 'lucide-svelte';
+	import { page } from '$app/stores';
 
 	export let data: SuperValidated<SignUpSchema>;
 
-	const { form, errors, enhance, delayed, message } = superForm(data);
+	const { errors, enhance, delayed, message } = superForm(data);
 </script>
 
 <form method="POST" use:enhance class="grid gap-2">
@@ -53,8 +55,16 @@
 			<p class="text-xs text-destructive">{$errors.passwordConfirm[0]}</p>
 		{/if}
 	</label>
-	<Button type="submit">Create account</Button>
+	<Button type="submit">
+		{#if $delayed}
+			<Loader class="animate-spin" />
+		{:else}
+			Create account
+		{/if}
+	</Button>
 	{#if $message}
-		<p class="text-center text-xs text-destructive">{$message}</p>
+		<p class="text-center text-xs {$page.status === 200 ? 'text-green-400' : 'text-destructive'}">
+			{$message}
+		</p>
 	{/if}
 </form>

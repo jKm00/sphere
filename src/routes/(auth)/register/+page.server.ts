@@ -1,7 +1,7 @@
 import { signUpSchema } from '$lib/schema';
 import { message, setError, superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
-import { fail } from '@sveltejs/kit';
+import { fail, redirect } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async () => {
 	return {
@@ -20,19 +20,22 @@ export const actions: Actions = {
 		}
 
 		// TODO: Check if email already exists
-		if (false) {
+		const emailAlreadyExists = false;
+		if (emailAlreadyExists) {
 			return setError(form, 'email', 'Email already exists');
 		}
 
 		// TODO: Create user
 		// https://lucia-auth.com/tutorials/username-and-password/sveltekit
-		const somethingWentWrong = true;
+		const somethingWentWrong = false;
 		if (somethingWentWrong) {
-			return message(form, 'Something went wrong');
+			return message(form, 'Something went wrong', {
+				status: 409
+			});
 		}
 
-		return {
-			form
-		};
+		return message(form, 'User created successfully!');
+		// // Or
+		// redirect(302, '/login');
 	}
 };
