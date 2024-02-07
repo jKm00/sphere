@@ -1,14 +1,10 @@
 <script lang="ts">
 	import RegisterForm from '$lib/components/forms/RegisterForm.svelte';
-	import type { PageData, ActionData } from './$types';
+	import type { PageData } from './$types';
 
 	export let data: PageData;
 </script>
 
-<header class="flex items-center justify-between">
-	<a href="/" class="font-bold">Sphere</a>
-	<a href="/login" class="text-sm">Login</a>
-</header>
 <div class="flex flex-grow items-center justify-center">
 	<div class="width">
 		<RegisterForm data={data.form} />

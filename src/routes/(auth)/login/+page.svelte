@@ -4,10 +4,6 @@
 	import { Loader2 } from 'lucide-svelte';
 </script>
 
-<header class="flex items-center justify-between">
-	<a href="/" class="font-bold">Sphere</a>
-	<a href="/register" class="text-sm">Register</a>
-</header>
 <div class="flex flex-grow items-center justify-center">
 	<form class="width grid gap-4">
 		<h1 class="mb-4 text-center text-3xl font-bold">Login</h1>

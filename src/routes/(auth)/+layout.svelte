@@ -5,6 +5,9 @@
 	</div>
 	<!-- Form -->
 	<section class="flex h-full flex-col p-4">
+		<header class="flex items-center">
+			<a href="/" class="font-bold">Sphere</a>
+		</header>
 		<slot />
 	</section>
 </main>
