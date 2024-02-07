@@ -1,7 +1,11 @@
 <script lang="ts">
-	import { Button } from '$lib/components/ui/button';
-	import { Input } from '$lib/components/ui/input';
-	import { Loader2 } from 'lucide-svelte';
+	import RegisterForm from '$lib/components/forms/RegisterForm.svelte';
+	import type { PageData, ActionData } from './$types';
+
+	export let data: PageData;
+	export let form: ActionData;
+
+	$: console.log(form, data);
 </script>
 
 <header class="flex items-center justify-between">
@@ -9,22 +13,12 @@
 	<a href="/login" class="text-sm">Login</a>
 </header>
 <div class="flex flex-grow items-center justify-center">
-	<form class="width grid gap-4">
-		<h1 class="mb-4 text-center text-3xl font-bold">Register</h1>
-		<div>
-			<Input type="email" placeholder="name@example.com" />
-		</div>
-		<div>
-			<Input type="password" placeholder="**********" />
-		</div>
-		<Button class="grid grid-cols-3" type="submit">
-			<Loader2 class="animate-spin" />
-			Create account
-		</Button>
+	<div class="width">
+		<RegisterForm data={data.form} />
 		<p class="mt-4 text-center text-xs">
 			Alread have an account? <a href="/login" class="underline">Login here</a>
 		</p>
-	</form>
+	</div>
 </div>
 
 <style scoped>
