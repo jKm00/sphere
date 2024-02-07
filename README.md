@@ -50,3 +50,23 @@ npx prisma migrate deploy
 ```
 pnpm dev
 ```
+
+## Prisma Commands
+
+### Create a migration
+
+```
+npx prisma migrate dev --name <name_of_migration>
+```
+
+### Generate / Update Prisma client
+
+```
+npx prisma generate
+```
+
+### Deploy migration to local db
+
+```
+npx prisma migrate deploy
+```
