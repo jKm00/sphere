@@ -1,38 +1,52 @@
-# create-svelte
+# Sphere
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+A web app for tracking subscriptions
 
-## Creating a project
+## Stack
 
-If you're seeing this, you've probably already done this step. Congrats!
-
-```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
+```
+- Sveltekit   - Frontend/Backend
+- Lucia       - Auth
+- Prisma      - ORM
+- PostgreSQL  - Database
 ```
 
-## Developing
+## Getting started
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+### Prerequisite
 
-```bash
-npm run dev
+- Docker
+- Node
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+### Step by Step
+
+1. Add `.env` file (see `.env.example`)
+2. Run database
+
+```
+docker compose up
 ```
 
-## Building
+3. Install dependencies
 
-To create a production version of your app:
-
-```bash
-npm run build
+```
+pnpm install
 ```
 
-You can preview the production build with `npm run preview`.
+4. Generate Prisma client
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+```
+npx prisma generate
+```
+
+5. Apply migration to running db
+
+```
+npx prisma migrate deploy
+```
+
+6. Run application
+
+```
+pnpm dev
+```
