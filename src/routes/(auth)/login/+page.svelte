@@ -1,7 +1,18 @@
 <script lang="ts">
+	import { page } from '$app/stores';
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
 	import { Loader2 } from 'lucide-svelte';
+	import { toast } from 'svelte-sonner';
+	import { getFlash } from 'sveltekit-flash-message';
+
+	// Get flash returned from register page when
+	// new user is successfully registered
+	const flash = getFlash(page);
+
+	$: if ($flash) {
+		toast.success($flash.message);
+	}
 </script>
 
 <div class="flex flex-grow items-center justify-center">

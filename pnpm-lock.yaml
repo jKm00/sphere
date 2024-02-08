@@ -109,6 +109,9 @@ devDependencies:
   svelte-check:
     specifier: ^3.6.0
     version: 3.6.0(postcss-load-config@5.0.2)(postcss@8.4.32)(svelte@4.2.7)
+  sveltekit-flash-message:
+    specifier: ^2.4.1
+    version: 2.4.1(@sveltejs/kit@2.0.0)(svelte@4.2.7)
   sveltekit-superforms:
     specifier: ^1.13.4
     version: 1.13.4(@sveltejs/kit@2.0.0)(svelte@4.2.7)(zod@3.22.4)
@@ -3681,6 +3684,16 @@ packages:
       locate-character: 3.0.0
       magic-string: 0.30.6
       periscopic: 3.1.0
+
+  /sveltekit-flash-message@2.4.1(@sveltejs/kit@2.0.0)(svelte@4.2.7):
+    resolution: {integrity: sha512-n01N62FkXL6tp3VK3u4eCHKz1RwZVgqEEj63pUG/Pj3caHWkjtTUHKX8GRb14kpt9bkML8t93D/B1l1UorskvA==}
+    peerDependencies:
+      '@sveltejs/kit': 1.x || 2.x
+      svelte: 3.x || 4.x
+    dependencies:
+      '@sveltejs/kit': 2.0.0(@sveltejs/vite-plugin-svelte@3.0.0)(svelte@4.2.7)(vite@5.0.3)
+      svelte: 4.2.7
+    dev: true
 
   /sveltekit-superforms@1.13.4(@sveltejs/kit@2.0.0)(svelte@4.2.7)(zod@3.22.4):
     resolution: {integrity: sha512-rM2+Ictaw7OAIorCLmvg82orci/mtO9ZouI4emtx8SyYngx9aED+eNZlHPLufgB6D7geL2a+hMSFtM3zmMQixQ==}
