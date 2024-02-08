@@ -6,7 +6,7 @@ import { db } from './prisma';
 const client = db;
 const adapter = new PrismaAdapter(client.session, client.user);
 
-export const lucia = new Lucia(adapter, {
+export const auth = new Lucia(adapter, {
 	sessionCookie: {
 		attributes: {
 			secure: !dev
@@ -16,6 +16,6 @@ export const lucia = new Lucia(adapter, {
 
 declare module 'lucia' {
 	interface Register {
-		Lucia: typeof lucia;
+		Lucia: typeof auth;
 	}
 }

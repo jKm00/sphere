@@ -4,7 +4,7 @@
 	import { superForm } from 'sveltekit-superforms/client';
 	import { Input } from '$lib/components/ui/input';
 	import { Button } from '$lib/components/ui/button';
-	import { Loader, Loader2 } from 'lucide-svelte';
+	import { Loader } from 'lucide-svelte';
 	import { page } from '$app/stores';
 
 	export let data: SuperValidated<SignUpSchema>;
