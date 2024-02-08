@@ -15,13 +15,17 @@
 			<span class="h-[1px] flex-grow bg-primary"></span>
 		</div>
 		<div class="grid gap-2">
-			<Button class="flex justify-between" variant="outline">
-				<img src="/icons/google.png" alt="Google icon" class="h-full" />
-				Google
-				<img src="/icons/google.png" alt="Google icon" class="h-full opacity-0" />
+			<Button
+				class="flex justify-between px-3 opacity-50"
+				variant="outline"
+				title="GitHub sign in: Not implemented"
+			>
+				<img src="/icons/github.png" alt="GitHub icon" class="h-8" />
+				GitHub
+				<img src="/icons/github.png" alt="GitHub icon" class="h-8 opacity-0" />
 			</Button>
 			<Button href="/login" class="flex justify-between" variant="outline">
-				<Mail class="h-[80%]" />
+				<Mail class="h-full" />
 				Email
 				<Mail class="h-[80%] opacity-0" />
 			</Button>
