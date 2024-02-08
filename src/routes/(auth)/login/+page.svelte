@@ -12,7 +12,13 @@
 
 	$: if ($flash) {
 		toast.success($flash.message);
+
+		// Clear flash
+		$flash = undefined;
 	}
+
+	// TODO: Add login functionality
+	// https://lucia-auth.com/tutorials/username-and-password/sveltekit
 </script>
 
 <div class="flex flex-grow items-center justify-center">
