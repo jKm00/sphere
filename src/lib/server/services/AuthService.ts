@@ -90,10 +90,45 @@ export class AuthService {
 	 * @param user to create session for
 	 * @returns session cookie
 	 */
-	public async createSession(user: User) {
+	private async createSession(user: User) {
 		const session = await this.auth.createSession(user.id, {});
 		const sessionCookie = this.auth.createSessionCookie(session.id);
 		return sessionCookie;
+	}
+
+	/**
+	 * Refreshes the session cookie
+	 * @param sessionId id of the session to refresh
+	 * @returns a new session cookie
+	 */
+	public refreshSession(sessionId: string) {
+		return this.auth.createSessionCookie(sessionId);
+	}
+
+	/**
+	 * Returns a blank session cookie
+	 * @returns a blank session
+	 */
+	public createBlankSessionCookie() {
+		return this.auth.createBlankSessionCookie();
+	}
+
+	/**
+	 * Returns the name of the cookie used for sessions
+	 * @returns name of cookie
+	 */
+	public getSessionCookieName() {
+		return this.auth.sessionCookieName;
+	}
+
+	/**
+	 * Checks if the session is valid
+	 * @param sessionId of the session to validate
+	 * @returns a session and user if the session is valid
+	 */
+	public async validateSession(sessionId: string) {
+		const { session, user } = await this.auth.validateSession(sessionId);
+		return { session, user };
 	}
 }
 
