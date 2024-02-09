@@ -130,6 +130,16 @@ export class AuthService {
 		const { session, user } = await this.auth.validateSession(sessionId);
 		return { session, user };
 	}
+
+	/**
+	 * Logs out a user
+	 * @param sessionId id of the session to invalidate
+	 * @returns a blank session cookie used to overwrite the current session cookie
+	 */
+	public async logout(sessionId: string) {
+		await this.auth.invalidateSession(sessionId);
+		return this.createBlankSessionCookie();
+	}
 }
 
 export default new AuthService(auth, UserRepositoryImpl, new Argon2id());
