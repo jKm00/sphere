@@ -8,8 +8,4 @@
 <ModeWatcher />
 <Toaster position="top-right" closeButton richColors />
 
-<div class="absolute right-4 top-4 flex items-center gap-4">
-	<ThemeToggler />
-</div>
-
 <slot />

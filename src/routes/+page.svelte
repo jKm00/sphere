@@ -1,7 +1,12 @@
 <script lang="ts">
+	import ThemeToggler from '$lib/components/ThemeToggler.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { Mail } from 'lucide-svelte';
 </script>
+
+<div class="absolute right-4 top-4 flex items-center gap-4">
+	<ThemeToggler />
+</div>
 
 <main class="flex h-screen items-center justify-center">
 	<div class="grid gap-8 text-center">
