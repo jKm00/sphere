@@ -48,7 +48,7 @@ export const actions: Actions = {
 		// in a toast
 		redirect(
 			302,
-			'/login',
+			'/login?register=success',
 			{
 				type: 'success',
 				message: 'User created successfully!'
