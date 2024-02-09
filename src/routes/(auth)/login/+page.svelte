@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { Button } from '$lib/components/ui/button';
-	import { Input } from '$lib/components/ui/input';
-	import { Loader2 } from 'lucide-svelte';
+	import LoginForm from '$lib/components/forms/LoginForm.svelte';
 	import { toast } from 'svelte-sonner';
 	import { getFlash } from 'sveltekit-flash-message';
+	import type { PageData } from './$types';
+
+	export let data: PageData;
 
 	// Get flash returned from register page when
 	// new user is successfully registered
@@ -16,28 +17,16 @@
 		// Clear flash
 		$flash = undefined;
 	}
-
-	// TODO: Add login functionality
-	// https://lucia-auth.com/tutorials/username-and-password/sveltekit
 </script>
 
 <div class="flex flex-grow items-center justify-center">
-	<form class="width grid gap-4">
+	<div class="width">
 		<h1 class="mb-4 text-center text-3xl font-bold">Login</h1>
-		<div>
-			<Input type="email" placeholder="name@example.com" />
-		</div>
-		<div>
-			<Input type="password" placeholder="**********" />
-		</div>
-		<Button class="grid grid-cols-3" type="submit">
-			<Loader2 class="animate-spin" />
-			Login
-		</Button>
+		<LoginForm data={data.form} />
 		<p class="mt-4 text-center text-xs">
 			Don't have an account? <a href="/register" class="underline">Sign up here</a>
 		</p>
-	</form>
+	</div>
 </div>
 
 <style scoped>

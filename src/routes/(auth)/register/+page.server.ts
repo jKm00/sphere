@@ -1,4 +1,4 @@
-import { signUpSchema } from '$lib/schema';
+import { signUpSchema } from '$lib/schemas/register';
 import { message, setError, superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
 import { fail } from '@sveltejs/kit';

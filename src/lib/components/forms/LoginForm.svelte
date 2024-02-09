@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { type SignUpSchema } from '$lib/schemas/register';
+	import type { LoginSchema } from '$lib/schemas/login';
 	import type { SuperValidated } from 'sveltekit-superforms';
 	import { superForm } from 'sveltekit-superforms/client';
 	import { Input } from '$lib/components/ui/input';
@@ -7,7 +7,7 @@
 	import { Loader } from 'lucide-svelte';
 	import { page } from '$app/stores';
 
-	export let data: SuperValidated<SignUpSchema>;
+	export let data: SuperValidated<LoginSchema>;
 
 	const { errors, enhance, delayed, message } = superForm(data);
 </script>
@@ -24,13 +24,13 @@
 			class={$errors.email ? 'border-destructive' : ''}
 		/>
 		{#if $errors.email}
-			<p class="text-xs text-destructive">{$errors.email[0]}</p>
+			<p class="text-xs text-destructive">{$errors.email}</p>
 		{/if}
 	</label>
 	<label for="password">
 		<span class="font-semibold">Password</span>
 		<Input
-			id="pasword"
+			id="password"
 			type="password"
 			name="password"
 			aria-invalid={$errors.password ? 'true' : undefined}
@@ -38,28 +38,14 @@
 			class={$errors.password ? 'border-destructive' : ''}
 		/>
 		{#if $errors.password}
-			<p class="text-xs text-destructive">{$errors.password[0]}</p>
-		{/if}
-	</label>
-	<label for="passwordConfirm">
-		<span class="font-semibold">Confirm password</span>
-		<Input
-			id="passwordConfirm"
-			type="password"
-			name="passwordConfirm"
-			aria-invalid={$errors.passwordConfirm ? 'true' : undefined}
-			placeholder="********"
-			class={$errors.passwordConfirm ? 'border-destructive' : ''}
-		/>
-		{#if $errors.passwordConfirm}
-			<p class="text-xs text-destructive">{$errors.passwordConfirm[0]}</p>
+			<p class="text-xs text-destructive">{$errors.password}</p>
 		{/if}
 	</label>
 	<Button type="submit">
 		{#if $delayed}
 			<Loader class="animate-spin" />
 		{:else}
-			Create account
+			Login
 		{/if}
 	</Button>
 	{#if $message}
