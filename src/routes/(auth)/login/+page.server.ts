@@ -5,7 +5,11 @@ import { fail } from '@sveltejs/kit';
 import AuthService from '$lib/server/services/AuthService';
 import { redirect } from 'sveltekit-flash-message/server';
 
-export const load: PageServerLoad = async () => {
+export const load: PageServerLoad = async (event) => {
+	if (event.locals.user) {
+		redirect(302, '/dashboard');
+	}
+
 	return {
 		form: await superValidate(loginSchema)
 	};
