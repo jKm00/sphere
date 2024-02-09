@@ -10,9 +10,11 @@
 	export let data: SuperValidated<LoginSchema>;
 
 	const { errors, enhance, delayed, message } = superForm(data);
+
+	$: redirect = $page.url.searchParams.get('redirect') || '/';
 </script>
 
-<form method="POST" use:enhance class="grid gap-2">
+<form method="POST" action="?redirect={redirect}" use:enhance class="grid gap-2">
 	<label for="email">
 		<span class="font-semibold">Email</span>
 		<Input

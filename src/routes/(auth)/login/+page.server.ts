@@ -46,9 +46,11 @@ export const actions = {
 			});
 		}
 
+		const redirectUrl = event.url.searchParams.get('redirect') || '/dashboard';
+
 		redirect(
 			302,
-			'/dashboard',
+			redirectUrl,
 			{
 				type: 'success',
 				message: 'Welcome back!'
