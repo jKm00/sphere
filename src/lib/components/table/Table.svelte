@@ -56,8 +56,6 @@
 		}
 	] as Header[];
 
-	// If selectAll is active and user deselects all rows, row by row,
-	// then update selectAll to false
 	$: if (selectAll && checkedRows.length === 0) {
 		selectAll = false;
 	}
