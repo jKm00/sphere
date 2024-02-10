@@ -15,8 +15,6 @@
 	export let data: SubscriptionDto[];
 	export let checkedRows: string[] = [];
 
-	let selectAll = false;
-
 	let headers = [
 		{
 			key: 'id',
@@ -56,9 +54,7 @@
 		}
 	] as Header[];
 
-	$: if (selectAll && checkedRows.length === 0) {
-		selectAll = false;
-	}
+	$: selectAll = checkedRows.length === data.length;
 
 	/**
 	 * Updates the sort state based on the header clicked

@@ -1,6 +1,5 @@
 import { fail } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { dev } from '$app/environment';
 import { message, superValidate } from 'sveltekit-superforms/server';
 import { subscriptionSchema } from '$lib/schemas/subscription';
 import SubscriptionService from '$lib/server/services/SubscriptionService';
@@ -11,7 +10,7 @@ import type { SubscriptionDto } from '$lib/dtos/subscription';
 // This happens only for server files in this route.
 //@ts-ignore
 export const load: PageServerLoad = async (event) => {
-	if (!event.locals.user && !dev) {
+	if (!event.locals.user) {
 		redirect(302, '/login?redirect=/dashboard');
 	}
 
