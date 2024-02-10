@@ -11,11 +11,13 @@ datasource db {
 }
 
 model User {
-  id              String    @id
-  email           String    @unique
+  id              String         @id
+  createdAt       DateTime       @default(now())
+  email           String         @unique
   hashed_password String
   salt            String
   sessions        Session[]
+  subscriptions   Subscription[]
 }
 
 model Session {
@@ -23,4 +25,18 @@ model Session {
   userId    String
   expiresAt DateTime
   user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
+}
+
+model Subscription {
+  id          String   @id
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  company     String
+  description String
+  amount      Float
+  currency    String
+  period      String
+  type        String
+  url         String
 }

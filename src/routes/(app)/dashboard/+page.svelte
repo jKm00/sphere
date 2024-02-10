@@ -7,7 +7,7 @@
 
 	export let data: PageData;
 
-	// Display flash message returned when logged in
+	// Display flash message returned from redirects
 	const flash = getFlash(page);
 	$: if ($flash) {
 		if ($flash.type === 'success') {

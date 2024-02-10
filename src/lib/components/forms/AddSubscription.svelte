@@ -8,14 +8,16 @@
 	import type { SubscriptionSchema } from '$lib/schemas/subscription';
 	import { superForm } from 'sveltekit-superforms/client';
 	import { page } from '$app/stores';
-	import { date } from 'zod';
+	import { Loader2 } from 'lucide-svelte';
+	import type { ActionResult } from '@sveltejs/kit';
 
 	export let subscriptionForm: SuperValidated<SubscriptionSchema>;
 
-	const { errors, enhance, delayed, message } = superForm(subscriptionForm);
+	const { errors, enhance, delayed, message } = superForm(subscriptionForm, {
+		onResult: handleFormResult
+	});
 
-	// tmp
-	let open = true;
+	let open = false;
 
 	const currencies = [
 		{ value: 'USD', label: '($) USD' },
@@ -39,9 +41,18 @@
 		{ value: 'other', label: 'Other' }
 	];
 
-	let selectedCurrency: { value: string; label: string };
-	let selectedPeriod: { value: string; label: string };
-	let selectedType: { value: string; label: string };
+	let selectedCurrency: { value: string; label: string } | undefined;
+	let selectedPeriod: { value: string; label: string } | undefined;
+	let selectedType: { value: string; label: string } | undefined;
+
+	function handleFormResult({ result }: { result: ActionResult }) {
+		if (result.type !== 'failure') {
+			open = false;
+			selectedCurrency = undefined;
+			selectedPeriod = undefined;
+			selectedType = undefined;
+		}
+	}
 </script>
 
 <Sheet.Root bind:open>
@@ -174,7 +185,13 @@
 					placeholder="website.com/mysubscriptions"
 				/>
 			</div>
-			<Button type="submit">Add</Button>
+			<Button type="submit">
+				{#if $delayed}
+					<Loader2 class="animate-spin" />
+				{:else}
+					Add
+				{/if}
+			</Button>
 			{#if $message}
 				<p
 					class="text-center text-xs {$page.status === 200 ? 'text-green-400' : 'text-destructive'}"

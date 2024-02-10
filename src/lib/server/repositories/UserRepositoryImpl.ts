@@ -25,7 +25,7 @@ class UserRepositoryImpl implements UserRepository {
 		});
 	}
 
-	public async save(user: User) {
+	public async save(user: Omit<User, 'createdAt'>) {
 		return await this.db.user.create({
 			data: user
 		});

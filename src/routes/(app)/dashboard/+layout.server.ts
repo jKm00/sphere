@@ -2,6 +2,9 @@ import type { UserDto } from '$lib/dtos/user';
 import UserService from '$lib/server/services/UserService';
 import type { PageServerLoad } from './$types';
 
+// For some reason, ts complains about the event type not being defined.
+// This happens only for server files in this route.
+//@ts-ignore
 export const load: PageServerLoad = async (event) => {
 	let user: UserDto | null = null;
 	if (event.locals.user) {

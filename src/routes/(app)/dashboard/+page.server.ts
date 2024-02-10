@@ -1,9 +1,14 @@
-import { fail, redirect } from '@sveltejs/kit';
+import { fail } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { dev } from '$app/environment';
 import { message, superValidate } from 'sveltekit-superforms/server';
 import { subscriptionSchema } from '$lib/schemas/subscription';
+import SubscriptionService from '$lib/server/services/SubscriptionService';
+import { redirect } from 'sveltekit-flash-message/server';
 
+// For some reason, ts complains about the event type not being defined.
+// This happens only for server files in this route.
+//@ts-ignore
 export const load: PageServerLoad = async (event) => {
 	if (!event.locals.user && !dev) {
 		redirect(302, '/login?redirect=/dashboard');
@@ -21,13 +26,38 @@ export const actions = {
 		}
 
 		const form = await superValidate(event, subscriptionSchema);
-		console.log(form.data);
 		if (!form.valid) {
 			return fail(400, {
 				form
 			});
 		}
 
-		return message(form, 'Subscription added');
+		const { company, description, amount, currency, period, type, url } = form.data;
+
+		try {
+			SubscriptionService.addSubscription(event.locals.user.id, {
+				company,
+				description: description ?? '',
+				amount,
+				currency,
+				period,
+				type,
+				url: url ?? ''
+			});
+		} catch (e) {
+			return message(form, 'Failed to add subscription', {
+				status: 500
+			});
+		}
+
+		redirect(
+			302,
+			'/dashboard',
+			{
+				type: 'success',
+				message: 'Successfully added subscription!'
+			},
+			event
+		);
 	}
 };

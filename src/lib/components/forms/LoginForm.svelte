@@ -4,7 +4,7 @@
 	import { superForm } from 'sveltekit-superforms/client';
 	import { Input } from '$lib/components/ui/input';
 	import { Button } from '$lib/components/ui/button';
-	import { Loader } from 'lucide-svelte';
+	import { Loader2 } from 'lucide-svelte';
 	import { page } from '$app/stores';
 
 	export let data: SuperValidated<LoginSchema>;
@@ -45,7 +45,7 @@
 	</label>
 	<Button type="submit">
 		{#if $delayed}
-			<Loader class="animate-spin" />
+			<Loader2 class="animate-spin" />
 		{:else}
 			Login
 		{/if}

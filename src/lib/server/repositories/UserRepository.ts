@@ -19,5 +19,5 @@ export interface UserRepository {
 	 * Saves the given user to the database
 	 * @param user to save
 	 */
-	save(user: User): Promise<User>;
+	save(user: Omit<User, 'createdAt'>): Promise<User>;
 }

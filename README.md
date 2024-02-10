@@ -65,6 +65,8 @@ npx prisma migrate dev --name <name_of_migration>
 npx prisma generate
 ```
 
+_Need to stop dev server before generating new client_
+
 ### Deploy migration to local db
 
 ```
