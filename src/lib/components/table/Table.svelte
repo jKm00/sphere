@@ -131,7 +131,7 @@
 </script>
 
 <Table.Root>
-	<Table.Caption>A list of all your subscription</Table.Caption>
+	<Table.Caption>A list of all your subscriptions</Table.Caption>
 	<Table.Header>
 		<Table.Row>
 			<Table.Head class="w-10">
