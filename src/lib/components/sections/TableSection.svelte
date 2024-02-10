@@ -8,15 +8,17 @@
 
 	export let subscriptionForm: SuperValidated<SubscriptionSchema>;
 	export let data: SubscriptionDto[];
+
+	let checkedRows: string[] = [];
 </script>
 
 <section>
-	<header class="flex items-center justify-between">
+	<header class="mb-4 flex items-center justify-between">
 		<h2 class="text-xl font-bold">Your subscriptions</h2>
 		<div>
-			<Button variant="destructive" disabled>Delete</Button>
+			<Button variant="destructive" disabled={checkedRows.length === 0}>Delete</Button>
 			<AddSubscription {subscriptionForm} />
 		</div>
 	</header>
-	<Table {data} />
+	<Table {data} bind:checkedRows />
 </section>

@@ -5,14 +5,17 @@
 	import { page } from '$app/stores';
 	import { MoveDown, MoveUp } from 'lucide-svelte';
 
-	export let data: SubscriptionDto[];
-
 	type Header = {
 		key: string;
 		label: string;
 		sort?: 'asc' | 'desc' | null;
 		action?: (header: Header) => void;
 	};
+
+	export let data: SubscriptionDto[];
+	export let checkedRows: string[] = [];
+
+	let selectAll = false;
 
 	let headers = [
 		{
@@ -53,6 +56,16 @@
 		}
 	] as Header[];
 
+	// If selectAll is active and user deselects all rows, row by row,
+	// then update selectAll to false
+	$: if (selectAll && checkedRows.length === 0) {
+		selectAll = false;
+	}
+
+	/**
+	 * Updates the sort state based on the header clicked
+	 * @param header to sort by
+	 */
 	function updateSort(header: Header) {
 		// Use current sort state to calculate new state
 		let newSort: 'asc' | 'desc' | null;
@@ -87,6 +100,12 @@
 		]);
 	}
 
+	/**
+	 * Updates the url with new key value pairs. This will retrigger the load function.
+	 * - Keys in the url that are not included in the list will not be modified
+	 * - Keys that have a value of null or undefined will be removed
+	 * @param pairs a list of new key value pairs
+	 */
 	function updateUrl(pairs: { key: string; value: string | undefined | null }[]) {
 		const searchParams = $page.url.searchParams;
 
@@ -100,12 +119,30 @@
 		});
 		goto(`?${searchParams.toString()}`, { invalidateAll: true });
 	}
+
+	/**
+	 * Selects all rows in the table.
+	 * If all rows are already selected, it will deselect all rows.
+	 * @param event
+	 */
+	function handleAllSelect() {
+		selectAll = !selectAll;
+
+		if (selectAll) {
+			checkedRows = data.map((d) => d.id);
+		} else {
+			checkedRows = [];
+		}
+	}
 </script>
 
 <Table.Root>
 	<Table.Caption>A list of all your subscription</Table.Caption>
 	<Table.Header>
 		<Table.Row>
+			<Table.Head class="w-10">
+				<input type="checkbox" on:click={handleAllSelect} bind:checked={selectAll} />
+			</Table.Head>
 			{#each headers as header (header.key)}
 				<Table.Head>
 					{#if header.action}
@@ -133,13 +170,16 @@
 		</Table.Row>
 	</Table.Header>
 	<Table.Body>
-		{#each data as subsription, i (i)}
+		{#each data as subscription, i (i)}
 			<Table.Row>
-				<Table.Cell>{subsription.id}</Table.Cell>
-				<Table.Cell>{subsription.company}</Table.Cell>
-				<Table.Cell>{subsription.amount} {subsription.currency}</Table.Cell>
-				<Table.Cell>{subsription.period}</Table.Cell>
-				<Table.Cell>{subsription.type}</Table.Cell>
+				<Table.Cell>
+					<input type="checkbox" value={subscription.id} bind:group={checkedRows} />
+				</Table.Cell>
+				<Table.Cell>{subscription.id}</Table.Cell>
+				<Table.Cell>{subscription.company}</Table.Cell>
+				<Table.Cell>{subscription.amount} {subscription.currency}</Table.Cell>
+				<Table.Cell>{subscription.period}</Table.Cell>
+				<Table.Cell>{subscription.type}</Table.Cell>
 			</Table.Row>
 		{/each}
 	</Table.Body>
