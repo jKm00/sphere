@@ -17,6 +17,14 @@ class UserRepositoryImpl implements UserRepository {
 		});
 	}
 
+	public async findUserById(id: string) {
+		return await this.db.user.findUnique({
+			where: {
+				id
+			}
+		});
+	}
+
 	public async save(user: User) {
 		return await this.db.user.create({
 			data: user

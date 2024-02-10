@@ -6,7 +6,6 @@ import { Argon2id } from 'oslo/password';
 import { Lucia, generateId } from 'lucia';
 import type { User } from '@prisma/client';
 import { auth } from '../auth';
-import type { RequestEvent } from '@sveltejs/kit';
 
 export class AuthService {
 	private auth;
@@ -58,8 +57,7 @@ export class AuthService {
 	 */
 	private async generateHashedPassword(password: string) {
 		const salt = generateRandomString(16, alphabet('a-z', '0-9'));
-		const pepper = PEPPER;
-		const hashedPassword = await this.hasher.hash(password + salt + pepper);
+		const hashedPassword = await this.hasher.hash(password + salt + PEPPER);
 		return [hashedPassword, salt];
 	}
 

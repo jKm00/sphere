@@ -17,13 +17,5 @@
 	}
 </script>
 
-<main class="width m-auto p-4">
-	<h1>Dashboard</h1>
-	<Button href="/logout">Log out</Button>
-</main>
-
-<style>
-	.width {
-		width: min(100%, 800px);
-	}
-</style>
+<p>Placeholder for main content</p>
+<Button href="/logout">Tmp logout button</Button>
