@@ -70,7 +70,7 @@
 			case 'desc':
 				newSort = null;
 				break;
-			default:
+			case null:
 				newSort = 'asc';
 				break;
 		}
