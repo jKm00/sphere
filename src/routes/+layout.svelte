@@ -5,6 +5,6 @@
 </script>
 
 <ModeWatcher />
-<Toaster position="top-right" closeButton richColors />
+<Toaster position="top-center" closeButton richColors />
 
 <slot />

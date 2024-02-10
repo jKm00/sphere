@@ -21,9 +21,9 @@
 		</Button>
 	</Popover.Trigger>
 	<Popover.Content class="w-80 p-0 pt-4">
-		<div class="grid gap-4 text-sm text-muted-foreground">
+		<div class="grid gap-2 text-sm text-muted-foreground">
 			<h2 class="px-4">{user.email}</h2>
-			<Separator />
+			<Separator class="my-2" />
 			<ThemeDropdown />
 			<Button
 				variant="ghost"
@@ -42,7 +42,7 @@
 				Log out
 				<LogOut class="w-4" />
 			</Button>
-			<Separator />
+			<Separator class="my-2" />
 			<p class="mb-4 text-center text-xs">Version {version}</p>
 		</div>
 	</Popover.Content>
