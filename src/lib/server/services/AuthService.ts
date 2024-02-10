@@ -61,7 +61,6 @@ export class AuthService {
 		return [hashedPassword, salt];
 	}
 
-	// TODO: Tests for login
 	/**
 	 * Returns a session cookie if the email and password are valid
 	 * @param email of the user
@@ -130,7 +129,6 @@ export class AuthService {
 		return { session, user };
 	}
 
-	// TODO: Tests for logout
 	/**
 	 * Logs out a user
 	 * @param sessionId id of the session to invalidate
