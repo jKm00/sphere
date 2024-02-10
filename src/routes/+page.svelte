@@ -1,5 +1,5 @@
 <script lang="ts">
-	import ThemeSwitch from '$lib/components/ThemeSwitch.svelte';
+	import ThemeSwitch from '$lib/components/themes/ThemeSwitch.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { Mail } from 'lucide-svelte';
 </script>

@@ -1,8 +1,11 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { Button } from '$lib/components/ui/button';
+	import TableSection from '$lib/components/sections/TableSection.svelte';
 	import { toast } from 'svelte-sonner';
 	import { getFlash } from 'sveltekit-flash-message';
+	import type { PageData } from './$types';
+
+	export let data: PageData;
 
 	// Display flash message returned when logged in
 	const flash = getFlash(page);
@@ -17,4 +20,5 @@
 	}
 </script>
 
-<p class="text-center text-muted-foreground">Not implemented</p>
+<!-- Section: Key numbers -->
+<TableSection subscriptionForm={data.subscriptionForm} />

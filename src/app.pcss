@@ -31,6 +31,9 @@
 		--destructive: 0 91% 71%;
 		--destructive-foreground: 0 0% 98%;
 
+		--additive: 142 69% 58%;
+		--additive-foreground: 0 0% 98%;
+
 		--ring: 0 0% 3.9%;
 
 		--radius: 0.5rem;
@@ -64,6 +67,9 @@
 		--destructive: 0 91% 71%;
 		--destructive-foreground: 0 0% 98%;
 
+		--additive: 142 69% 58%;
+		--additive-foreground: 0 0% 98%;
+
 		--ring: 0 0% 83.1%;
 	}
 }
@@ -74,5 +80,13 @@
 	}
 	body {
 		@apply bg-background text-foreground;
+	}
+	input[type='number']::-webkit-inner-spin-button,
+	input[type='number']::-webkit-outer-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
+	}
+	input[type='number'] {
+		-moz-appearance: textfield;
 	}
 }

@@ -2,7 +2,7 @@
 	import * as Popover from '$lib/components/ui/popover';
 	import { Button } from '$lib/components/ui/button';
 	import type { UserDto } from '$lib/dtos/user';
-	import ThemeDropdown from './ThemeDropdown.svelte';
+	import ThemeDropdown from './themes/ThemeDropdown.svelte';
 	import { LogOut, Settings, User } from 'lucide-svelte';
 	import Separator from './ui/separator/separator.svelte';
 	import { version } from '$lib/version';
