@@ -17,5 +17,4 @@
 	}
 </script>
 
-<p>Placeholder for main content</p>
-<Button href="/logout">Tmp logout button</Button>
+<p class="text-center text-muted-foreground">Not implemented</p>

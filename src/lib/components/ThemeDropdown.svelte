@@ -15,7 +15,7 @@
 	}
 </script>
 
-<div class="flex items-center justify-between">
+<div class="flex items-center justify-between px-4">
 	<p>Theme</p>
 	<Select.Root portal={null} bind:selected={selectedTheme}>
 		<Select.Trigger class="w-40">
