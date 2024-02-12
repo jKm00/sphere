@@ -25,6 +25,7 @@ export class SubscriptionRepositoryImpl implements SubscriptionRepository {
 				url: subscription.url
 			},
 			where: {
+				userId: userId,
 				id: subscription.id
 			}
 		});

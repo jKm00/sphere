@@ -14,45 +14,53 @@ export const load: PageServerLoad = async (event) => {
 		redirect(302, '/login?redirect=/dashboard');
 	}
 
-	// Convert search params to predicates
-	const predicate: Record<string, string> = {};
+	async function fetchSubscriptions() {
+		// Convert search params to predicates
+		const predicate: Record<string, string> = {};
 
-	const sortBy = event.url.searchParams.get('sortBy');
-	const order = event.url.searchParams.get('order');
+		const sortBy = event.url.searchParams.get('sortBy');
+		const order = event.url.searchParams.get('order');
 
-	if (sortBy && order) {
-		predicate['sortBy'] = sortBy;
-		predicate['order'] = order;
+		if (sortBy && order) {
+			predicate['sortBy'] = sortBy;
+			predicate['order'] = order;
+		}
+
+		const page = event.url.searchParams.get('page') ?? 1;
+		const pageSize = event.url.searchParams.get('pageSize') ?? 10;
+		predicate['page'] = page;
+		predicate['pageSize'] = pageSize;
+
+		// Get result
+		const result = await SubscriptionService.getAllSubscriptions(event.locals.user.id, predicate);
+
+		// Map to DTO
+		return {
+			data: result.data.map((item) => ({
+				id: item.id,
+				company: item.company,
+				description: item.description,
+				amount: item.amount,
+				currency: item.currency,
+				period: item.period,
+				type: item.type,
+				url: item.url
+			})),
+			totalItems: result.totalItems,
+			page,
+			pageSize
+		} as SubscriptionsDto;
 	}
 
-	const page = event.url.searchParams.get('page') ?? 1;
-	const pageSize = event.url.searchParams.get('pageSize') ?? 10;
-	predicate['page'] = page;
-	predicate['pageSize'] = pageSize;
-
-	// Get result
-	const result = await SubscriptionService.getAllSubscriptions(event.locals.user.id, predicate);
-
-	// Map to DTO
-	const subscriptions = {
-		data: result.data.map((item) => ({
-			id: item.id,
-			company: item.company,
-			description: item.description,
-			amount: item.amount,
-			currency: item.currency,
-			period: item.period,
-			type: item.type,
-			url: item.url
-		})),
-		totalItems: result.totalItems,
-		page,
-		pageSize
-	} as SubscriptionsDto;
+	const [subscriptionForm, deleteSubscriptionsForm, subscriptions] = await Promise.all([
+		superValidate(subscriptionSchema),
+		superValidate(deleteSubscriptionsSchema),
+		fetchSubscriptions()
+	]);
 
 	return {
-		subscriptionForm: await superValidate(subscriptionSchema),
-		deleteSubscriptionsForm: await superValidate(deleteSubscriptionsSchema),
+		subscriptionForm,
+		deleteSubscriptionsForm,
 		subscriptions
 	};
 };
