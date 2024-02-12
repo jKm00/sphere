@@ -58,7 +58,7 @@ export const load: PageServerLoad = async (event) => {
 };
 
 export const actions = {
-	addSubscription: async (event) => {
+	saveSubscription: async (event) => {
 		if (!event.locals.user) {
 			redirect(302, '/login?redirect=/dashboard');
 		}
@@ -70,10 +70,10 @@ export const actions = {
 			});
 		}
 
-		const { company, description, amount, currency, period, type, url } = form.data;
+		const { id, company, description, amount, currency, period, type, url } = form.data;
 
 		try {
-			SubscriptionService.addSubscription(event.locals.user.id, {
+			SubscriptionService.saveSubscription(event.locals.user.id, id, {
 				company,
 				description: description ?? '',
 				amount,
@@ -93,7 +93,7 @@ export const actions = {
 			'/dashboard',
 			{
 				type: 'success',
-				message: 'Successfully added subscription!'
+				message: 'Successfully saved subscription!'
 			},
 			event
 		);

@@ -7,7 +7,11 @@
 
 	export let subscription: SingleSubscriptionDto;
 
-	const dispatch = createEventDispatcher<{ view: SingleSubscriptionDto; delete: string }>();
+	const dispatch = createEventDispatcher<{
+		view: SingleSubscriptionDto;
+		edit: SingleSubscriptionDto;
+		delete: string;
+	}>();
 </script>
 
 <DropdownMenu.Root>
@@ -23,7 +27,7 @@
 				<Eye class="mr-2 h-4 w-4" />
 				View details
 			</DropdownMenu.Item>
-			<DropdownMenu.Item>
+			<DropdownMenu.Item on:click={() => dispatch('edit', subscription)}>
 				<Pencil class="mr-2 h-4 w-4" />
 				Edit details
 			</DropdownMenu.Item>

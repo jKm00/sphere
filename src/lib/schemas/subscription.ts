@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 export const subscriptionSchema = z.object({
+	id: z.string().optional(),
 	company: z.string({ required_error: 'Company is required' }).min(1, 'Company is required'),
 	description: z.string().optional(),
 	amount: z

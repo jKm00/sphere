@@ -6,10 +6,6 @@
 	import { page } from '$app/stores';
 	import { MoveDown, MoveUp } from 'lucide-svelte';
 	import TableAction from './TableAction.svelte';
-	import DetailsDialog from './DetailsDialog.svelte';
-	import DeleteDialog from './DeleteDialog.svelte';
-	import type { SuperValidated } from 'sveltekit-superforms';
-	import type { DeleteSubscriptionsSchema } from '$lib/schemas/subscription';
 
 	type Header = {
 		key: string;
@@ -19,9 +15,8 @@
 		action?: (header: Header) => void;
 	};
 
-	export let deleteSubscriptionForm: SuperValidated<DeleteSubscriptionsSchema>;
-	export let subscriptions: SubscriptionsDto;
 	export let checkedRows: string[] = [];
+	export let subscriptions: SubscriptionsDto;
 
 	let headers = [
 		{
@@ -62,11 +57,6 @@
 			}
 		}
 	] as Header[];
-
-	let viewingSubscription: SingleSubscriptionDto | null = null;
-
-	let deletingSubscription: string | null = null;
-	$: openDeleteDialog = deletingSubscription !== null;
 
 	$: selectAll = subscriptions.data.length > 0 && checkedRows.length === subscriptions.data.length;
 
@@ -161,22 +151,6 @@
 			checkedRows = [];
 		}
 	}
-
-	/**
-	 * Handles the view details event from the TableAction component
-	 * @param event
-	 */
-	function handleViewDetails(event: CustomEvent<SingleSubscriptionDto>) {
-		viewingSubscription = event.detail;
-	}
-
-	/**
-	 * Handles the delete event from the TableAction component
-	 * @param event
-	 */
-	function handleDelete(event: CustomEvent<string>) {
-		deletingSubscription = event.detail;
-	}
 </script>
 
 <!-- Table -->
@@ -231,13 +205,7 @@
 					<Table.Cell
 						>{subscription.type[0].toUpperCase()}{subscription.type.substring(1)}</Table.Cell
 					>
-					<Table.Cell
-						><TableAction
-							{subscription}
-							on:view={handleViewDetails}
-							on:delete={handleDelete}
-						/></Table.Cell
-					>
+					<Table.Cell><TableAction {subscription} on:view on:edit on:delete /></Table.Cell>
 				</Table.Row>
 			{/each}
 		{/if}
@@ -282,11 +250,3 @@
 		</Pagination.Content>
 	</Pagination.Root>
 </div>
-
-<DetailsDialog {viewingSubscription} />
-<DeleteDialog
-	bind:open={openDeleteDialog}
-	form={deleteSubscriptionForm}
-	items={deletingSubscription ? [deletingSubscription] : []}
-	showTrigger={false}
-/>

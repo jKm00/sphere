@@ -16,13 +16,14 @@ export class SubscriptionService {
 	 * @param subscription to add
 	 * @returns the added subscription
 	 */
-	public async addSubscription(
+	public async saveSubscription(
 		userId: string,
+		id: string | undefined,
 		subscription: Omit<Subscription, 'id' | 'createdAt' | 'userId'>
 	) {
 		const subscriptionWithId = {
 			...subscription,
-			id: generateId(15)
+			id: id ?? generateId(15)
 		};
 		return await this.repo.save(userId, subscriptionWithId);
 	}

@@ -9,7 +9,7 @@
 	export let form: SuperValidated<DeleteSubscriptionsSchema>;
 	export let items: string[] = [];
 	export let showTrigger = true;
-	export let open: boolean;
+	export let open = false;
 
 	const { enhance, delayed } = superForm(form, {
 		onResult: () => (items = [])
@@ -33,7 +33,7 @@
 			>
 		</AlertDialog.Header>
 		<AlertDialog.Footer>
-			<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
+			<AlertDialog.Cancel on:click={() => (items = [])}>Cancel</AlertDialog.Cancel>
 			<form method="POST" action="?/deleteSubscriptions" use:enhance>
 				<input type="hidden" name="ids" value={items} />
 				<AlertDialog.Action

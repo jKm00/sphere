@@ -10,10 +10,22 @@ export class SubscriptionRepositoryImpl implements SubscriptionRepository {
 	}
 
 	public async save(userId: string, subscription: Omit<Subscription, 'createdAt' | 'userID'>) {
-		return await this.db.subscription.create({
-			data: {
+		return await this.db.subscription.upsert({
+			create: {
 				...subscription,
 				userId
+			},
+			update: {
+				company: subscription.company,
+				description: subscription.description,
+				amount: subscription.amount,
+				currency: subscription.currency,
+				period: subscription.period,
+				type: subscription.type,
+				url: subscription.url
+			},
+			where: {
+				id: subscription.id
 			}
 		});
 	}

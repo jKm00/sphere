@@ -10,14 +10,26 @@
 	import { page } from '$app/stores';
 	import { Loader2 } from 'lucide-svelte';
 	import type { ActionResult } from '@sveltejs/kit';
+	import type { SingleSubscriptionDto } from '$lib/dtos/subscription';
 
 	export let subscriptionForm: SuperValidated<SubscriptionSchema>;
+	export let showTrigger = true;
+	export let mode: 'add' | 'edit' = 'add';
+	export let open = false;
+
+	export let editingSubscription: SingleSubscriptionDto | null = null;
+
+	$: company = editingSubscription?.company ?? '';
+	$: description = editingSubscription?.description ?? '';
+	$: amount = editingSubscription?.amount ?? '';
+	$: selectedCurrency = currencies.find((c) => c.value === editingSubscription?.currency);
+	$: selectedPeriod = periods.find((p) => p.value === editingSubscription?.period);
+	$: selectedType = types.find((t) => t.value === editingSubscription?.type);
+	$: url = editingSubscription?.url ?? '';
 
 	const { errors, enhance, delayed, message } = superForm(subscriptionForm, {
 		onResult: handleFormResult
 	});
-
-	let open = false;
 
 	const currencies = [
 		{ value: 'USD', label: '($) USD' },
@@ -41,41 +53,49 @@
 		{ value: 'other', label: 'Other' }
 	];
 
-	let selectedCurrency: { value: string; label: string } | undefined;
-	let selectedPeriod: { value: string; label: string } | undefined;
-	let selectedType: { value: string; label: string } | undefined;
-
 	function handleFormResult({ result }: { result: ActionResult }) {
 		if (result.type !== 'failure') {
-			open = false;
-			selectedCurrency = undefined;
-			selectedPeriod = undefined;
-			selectedType = undefined;
+			close();
 		}
+	}
+
+	function close() {
+		editingSubscription = null;
+		open = false;
+		selectedCurrency = undefined;
+		selectedPeriod = undefined;
+		selectedType = undefined;
+		mode = 'add';
 	}
 </script>
 
-<Sheet.Root bind:open>
-	<Sheet.Trigger asChild let:builder>
-		<Button builders={[builder]}>Add new</Button>
-	</Sheet.Trigger>
+<Sheet.Root bind:open onOpenChange={close}>
+	{#if showTrigger}
+		<Sheet.Trigger asChild let:builder>
+			<Button builders={[builder]}>Add new</Button>
+		</Sheet.Trigger>
+	{/if}
 	<Sheet.Content side="right" class="flex flex-col">
 		<Sheet.Header>
-			<Sheet.Title>Add new subscription</Sheet.Title>
-			<Sheet.Description>Fill in the form to save a new subscription</Sheet.Description>
+			<Sheet.Title>{mode === 'add' ? 'Add new' : 'Edit'} subscription</Sheet.Title>
+			<Sheet.Description
+				>Fill in the form to save {mode === 'add' ? 'a new' : 'save the'} subscription</Sheet.Description
+			>
 		</Sheet.Header>
 		<form
 			method="POST"
-			action="?/addSubscription"
+			action="?/saveSubscription"
 			use:enhance
 			class="mt-4 grid flex-grow content-start gap-4 overflow-y-auto"
 		>
+			<input type="hidden" name="id" value={editingSubscription?.id} />
 			<div>
 				<label for="company" class="text-xs">Company</label>
 				<Input
 					id="company"
 					type="text"
 					name="company"
+					bind:value={company}
 					aria-invalid={$errors.company ? 'true' : undefined}
 					placeholder="E.g. Netflix, Disneyplus, ..."
 					class={$errors.company ? 'border-destructive' : ''}
@@ -91,6 +111,7 @@
 				<Textarea
 					id="description"
 					name="description"
+					bind:value={description}
 					placeholder="Type any additional information here"
 				/>
 			</div>
@@ -101,6 +122,7 @@
 						id="amount"
 						type="number"
 						name="amount"
+						bind:value={amount}
 						inputmode="decimal"
 						pattern="\d*"
 						aria-invalid={$errors.amount ? 'true' : undefined}
@@ -182,6 +204,7 @@
 					type="url"
 					inputmode="url"
 					name="url"
+					bind:value={url}
 					placeholder="website.com/mysubscriptions"
 				/>
 			</div>
@@ -189,7 +212,7 @@
 				{#if $delayed}
 					<Loader2 class="animate-spin" />
 				{:else}
-					Add
+					{mode === 'add' ? 'Add' : 'Save'}
 				{/if}
 			</Button>
 			{#if $message}
