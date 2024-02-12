@@ -25,6 +25,11 @@ export const load: PageServerLoad = async (event) => {
 		predicate['order'] = order;
 	}
 
+	const page = event.url.searchParams.get('page') ?? 1;
+	const pageSize = event.url.searchParams.get('pageSize') ?? 10;
+	predicate['page'] = page;
+	predicate['pageSize'] = pageSize;
+
 	// Get result
 	const result = await SubscriptionService.getAllSubscriptions(event.locals.user.id, predicate);
 
@@ -41,7 +46,8 @@ export const load: PageServerLoad = async (event) => {
 			url: item.url
 		})),
 		totalItems: result.totalItems,
-		page: result.page
+		page,
+		pageSize
 	} as SubscriptionsDto;
 
 	return {

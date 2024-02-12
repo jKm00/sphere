@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { SubscriptionsDto } from '$lib/dtos/subscription';
 	import * as Table from '$lib/components/ui/table';
+	import * as Pagination from '$lib/components/ui/pagination';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { MoveDown, MoveUp } from 'lucide-svelte';
@@ -14,8 +15,6 @@
 
 	export let subscriptions: SubscriptionsDto;
 	export let checkedRows: string[] = [];
-
-	$: console.log(subscriptions);
 
 	let headers = [
 		{
@@ -58,6 +57,10 @@
 
 	$: selectAll = checkedRows.length === subscriptions.data.length;
 
+	$: currentPage = Number($page.url.searchParams.get('page'));
+
+	$: console.log(currentPage);
+
 	/**
 	 * Updates the sort state based on the header clicked
 	 * @param header to sort by
@@ -97,6 +100,20 @@
 	}
 
 	/**
+	 * Updates the page displayed in the table
+	 * @param newPage number of the page to update to
+	 */
+	function updatePage(newPage: number) {
+		if (newPage < 1) {
+			newPage = 1;
+		} else if (newPage > Math.ceil(subscriptions.totalItems / subscriptions.pageSize)) {
+			newPage = Math.ceil(subscriptions.totalItems / subscriptions.pageSize);
+		}
+
+		updateUrl([{ key: 'page', value: `${newPage}` }]);
+	}
+
+	/**
 	 * Updates the url with new key value pairs. This will retrigger the load function.
 	 * - Keys in the url that are not included in the list will not be modified
 	 * - Keys that have a value of null or undefined will be removed
@@ -133,7 +150,6 @@
 </script>
 
 <Table.Root>
-	<Table.Caption>A list of all your subscriptions</Table.Caption>
 	<Table.Header>
 		<Table.Row>
 			<Table.Head class="w-10">
@@ -180,3 +196,42 @@
 		{/each}
 	</Table.Body>
 </Table.Root>
+
+<!-- Table controlls -->
+<div class="flex items-center justify-between">
+	<p>{checkedRows.length} of {subscriptions.pageSize} row(s) selected</p>
+	<Pagination.Root
+		count={subscriptions.totalItems}
+		perPage={subscriptions.pageSize}
+		page={currentPage}
+		let:pages
+		let:currentPage
+		class="mx-0 w-auto"
+	>
+		<Pagination.Content>
+			<Pagination.Item>
+				<Pagination.PrevButton on:click={() => updatePage(currentPage ? currentPage - 1 : 0)} />
+			</Pagination.Item>
+			{#each pages as page (page.key)}
+				{#if page.type === 'ellipsis'}
+					<Pagination.Item>
+						<Pagination.Ellipsis on:click={() => updatePage(page.value)} />
+					</Pagination.Item>
+				{:else}
+					<Pagination.Item>
+						<Pagination.Link
+							on:click={() => updatePage(page.value)}
+							{page}
+							isActive={currentPage == page.value}
+						>
+							{page.value}
+						</Pagination.Link>
+					</Pagination.Item>
+				{/if}
+			{/each}
+			<Pagination.Item>
+				<Pagination.NextButton on:click={() => updatePage(currentPage ? currentPage + 1 : 0)} />
+			</Pagination.Item>
+		</Pagination.Content>
+	</Pagination.Root>
+</div>

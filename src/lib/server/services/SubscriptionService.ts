@@ -30,8 +30,7 @@ export class SubscriptionService {
 	public async getAllSubscriptions(userId: string, predicate?: Record<string, string>) {
 		return {
 			data: await this.repo.findAll(userId, predicate),
-			totalItems: await this.repo.getCount(userId),
-			page: 1
+			totalItems: await this.repo.getCount(userId)
 		};
 	}
 }

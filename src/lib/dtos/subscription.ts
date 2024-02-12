@@ -13,4 +13,5 @@ export type SubscriptionsDto = {
 	data: SingleSubscriptionDto[];
 	totalItems: number;
 	page: number;
+	pageSize: number;
 };

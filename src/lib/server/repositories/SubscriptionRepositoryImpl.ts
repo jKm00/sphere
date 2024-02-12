@@ -24,7 +24,14 @@ class SubscriptionRepositoryImpl implements SubscriptionRepository {
 			orderBy[predicate['sortBy']] = predicate['order'];
 		}
 
-		const take = 10;
+		let take = 10;
+		if (predicate && predicate['pageSize']) {
+			const pageSize = Number(predicate['pageSize']);
+			if (!isNaN(pageSize)) {
+				take = pageSize;
+			}
+		}
+
 		let skip = 0;
 		if (predicate && predicate['page']) {
 			const page = Number(predicate['page']);
