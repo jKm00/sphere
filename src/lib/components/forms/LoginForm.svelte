@@ -16,7 +16,7 @@
 
 <form method="POST" action="?redirect={redirect}" use:enhance class="grid gap-2">
 	<label for="email">
-		<span class="font-semibold">Email</span>
+		<span class="text-xs">Email</span>
 		<Input
 			id="email"
 			type="email"
@@ -30,7 +30,7 @@
 		{/if}
 	</label>
 	<label for="password">
-		<span class="font-semibold">Password</span>
+		<span class="text-xs">Password</span>
 		<Input
 			id="password"
 			type="password"

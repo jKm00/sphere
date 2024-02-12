@@ -81,15 +81,19 @@ export const actions = {
 		const { id, company, description, amount, currency, period, type, url } = form.data;
 
 		try {
-			SubscriptionService.saveSubscription(event.locals.user.id, id, {
-				company,
-				description: description ?? '',
-				amount,
-				currency,
-				period,
-				type,
-				url: url ?? ''
-			});
+			SubscriptionService.saveSubscription(
+				event.locals.user.id,
+				id === 'undefined' ? undefined : id,
+				{
+					company,
+					description: description ?? '',
+					amount,
+					currency,
+					period,
+					type,
+					url: url ?? ''
+				}
+			);
 		} catch (e) {
 			return message(form, 'Failed to add subscription. Please try again!', {
 				status: 500

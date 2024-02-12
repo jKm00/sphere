@@ -14,7 +14,7 @@
 
 <form method="POST" use:enhance class="grid gap-2">
 	<label for="email">
-		<span class="font-semibold">Email</span>
+		<span class="text-xs">Email</span>
 		<Input
 			id="email"
 			type="email"
@@ -28,7 +28,7 @@
 		{/if}
 	</label>
 	<label for="password">
-		<span class="font-semibold">Password</span>
+		<span class="text-xs">Password</span>
 		<Input
 			id="pasword"
 			type="password"
@@ -42,7 +42,7 @@
 		{/if}
 	</label>
 	<label for="passwordConfirm">
-		<span class="font-semibold">Confirm password</span>
+		<span class="text-xs">Confirm password</span>
 		<Input
 			id="passwordConfirm"
 			type="password"
