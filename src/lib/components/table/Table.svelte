@@ -60,7 +60,7 @@
 	let viewingSubscription: SingleSubscriptionDto | null = null;
 	$: openViewDialog = viewingSubscription !== null;
 
-	$: selectAll = checkedRows.length === subscriptions.data.length;
+	$: selectAll = subscriptions.data.length > 0 && checkedRows.length === subscriptions.data.length;
 
 	$: currentPage =
 		Number($page.url.searchParams.get('page')) === 0
@@ -194,22 +194,27 @@
 		</Table.Row>
 	</Table.Header>
 	<Table.Body>
-		{#each subscriptions.data as subscription, i (i)}
-			<Table.Row>
-				<Table.Cell>
-					<input type="checkbox" value={subscription.id} bind:group={checkedRows} />
-				</Table.Cell>
-				<Table.Cell>{subscription.id}</Table.Cell>
-				<Table.Cell>{subscription.company}</Table.Cell>
-				<Table.Cell>{subscription.amount} {subscription.currency}</Table.Cell>
-				<Table.Cell
-					>{subscription.period[0].toUpperCase()}{subscription.period.substring(1)}</Table.Cell
-				>
-				<Table.Cell>{subscription.type[0].toUpperCase()}{subscription.type.substring(1)}</Table.Cell
-				>
-				<Table.Cell><TableAction on:view={handleViewDetails} {subscription} /></Table.Cell>
-			</Table.Row>
-		{/each}
+		{#if subscriptions.data.length === 0}
+			<td colspan={100} class="py-10 text-center text-muted-foreground">No items...</td>
+		{:else}
+			{#each subscriptions.data as subscription, i (i)}
+				<Table.Row>
+					<Table.Cell>
+						<input type="checkbox" value={subscription.id} bind:group={checkedRows} />
+					</Table.Cell>
+					<Table.Cell>{subscription.id}</Table.Cell>
+					<Table.Cell>{subscription.company}</Table.Cell>
+					<Table.Cell>{subscription.amount} {subscription.currency}</Table.Cell>
+					<Table.Cell
+						>{subscription.period[0].toUpperCase()}{subscription.period.substring(1)}</Table.Cell
+					>
+					<Table.Cell
+						>{subscription.type[0].toUpperCase()}{subscription.type.substring(1)}</Table.Cell
+					>
+					<Table.Cell><TableAction on:view={handleViewDetails} {subscription} /></Table.Cell>
+				</Table.Row>
+			{/each}
+		{/if}
 	</Table.Body>
 </Table.Root>
 
