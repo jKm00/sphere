@@ -2,7 +2,7 @@ import type { PrismaClient, Subscription } from '@prisma/client';
 import type { SubscriptionRepository } from './SubscriptionRepository';
 import { db } from '../prisma';
 
-class SubscriptionRepositoryImpl implements SubscriptionRepository {
+export class SubscriptionRepositoryImpl implements SubscriptionRepository {
 	private db;
 
 	constructor(db: PrismaClient) {
@@ -18,7 +18,6 @@ class SubscriptionRepositoryImpl implements SubscriptionRepository {
 		});
 	}
 
-	// TODO: Test
 	public async findAll(userId: string, predicate?: Record<string, string>) {
 		const orderBy = {} as Record<string, string>;
 		if (predicate && predicate['sortBy'] && predicate['order']) {
