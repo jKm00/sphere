@@ -2,6 +2,7 @@ import type { Subscription } from '@prisma/client';
 import type { SubscriptionRepository } from '../repositories/SubscriptionRepository';
 import SubscriptionRepositoryImpl from '../repositories/SubscriptionRepositoryImpl';
 import { generateId } from 'lucia';
+import { random } from 'oslo/crypto';
 
 export class SubscriptionService {
 	private repo: SubscriptionRepository;
@@ -23,7 +24,7 @@ export class SubscriptionService {
 	) {
 		const subscriptionWithId = {
 			...subscription,
-			id: id ?? generateId(15)
+			id: id ?? Math.floor(random() * 100000).toString() // TODO: Check if this is a good way to generate ids
 		};
 		return await this.repo.save(userId, subscriptionWithId);
 	}

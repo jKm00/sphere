@@ -10,7 +10,7 @@
 <Dialog.Root bind:open={openViewDialog} onOpenChange={() => (viewingSubscription = null)}>
 	<Dialog.Content>
 		<Dialog.Header>
-			<Dialog.Title>{viewingSubscription?.id}</Dialog.Title>
+			<Dialog.Title>#{viewingSubscription?.id}</Dialog.Title>
 			<Dialog.Description>Viewing details of {viewingSubscription?.id}</Dialog.Description>
 		</Dialog.Header>
 		<div class="grid gap-4">
