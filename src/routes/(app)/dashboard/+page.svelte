@@ -21,4 +21,4 @@
 </script>
 
 <!-- Section: Key numbers -->
-<TableSection subscriptionForm={data.subscriptionForm} data={data.subscriptions} />
+<TableSection subscriptionForm={data.subscriptionForm} subscriptions={data.subscriptions} />

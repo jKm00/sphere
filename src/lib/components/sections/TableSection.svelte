@@ -4,10 +4,10 @@
 	import type { SuperValidated } from 'sveltekit-superforms';
 	import type { SubscriptionSchema } from '$lib/schemas/subscription';
 	import Table from '$lib/components/table/Table.svelte';
-	import type { SubscriptionDto } from '$lib/dtos/subscription';
+	import type { SubscriptionsDto } from '$lib/dtos/subscription';
 
 	export let subscriptionForm: SuperValidated<SubscriptionSchema>;
-	export let data: SubscriptionDto[];
+	export let subscriptions: SubscriptionsDto;
 
 	let checkedRows: string[] = [];
 </script>
@@ -20,5 +20,5 @@
 			<AddSubscription {subscriptionForm} />
 		</div>
 	</header>
-	<Table {data} bind:checkedRows />
+	<Table {subscriptions} bind:checkedRows />
 </section>

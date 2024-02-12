@@ -11,4 +11,19 @@ export interface SubscriptionRepository {
 		userId: string,
 		subscription: Omit<Subscription, 'createdAt' | 'userId'>
 	): Promise<Subscription>;
+
+	/**
+	 * Returns all subscriptions for the given user matching the predicates
+	 * @param userId to find subscriptions for
+	 * @param sortBy which column to sort by
+	 * @param order in which to sort by ('asc' or 'desc')
+	 * @returns a list of all subscriptions
+	 */
+	findAll(userId: string, predicate?: Record<string, string>): Promise<Subscription[]>;
+
+	/**
+	 * Returns the number of subscriptions for the given user
+	 * @param userId to count subscriptions
+	 */
+	getCount(userId: string): Promise<number>;
 }

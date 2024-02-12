@@ -1,4 +1,4 @@
-export type SubscriptionDto = {
+export type SingleSubscriptionDto = {
 	id: string;
 	company: string;
 	description: string;
@@ -7,4 +7,10 @@ export type SubscriptionDto = {
 	period: string;
 	type: string;
 	url: string;
+};
+
+export type SubscriptionsDto = {
+	data: SingleSubscriptionDto[];
+	totalItems: number;
+	page: number;
 };

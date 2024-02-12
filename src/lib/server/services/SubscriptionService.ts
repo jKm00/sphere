@@ -26,6 +26,14 @@ export class SubscriptionService {
 		};
 		return await this.repo.save(userId, subscriptionWithId);
 	}
+
+	public async getAllSubscriptions(userId: string, predicate?: Record<string, string>) {
+		return {
+			data: await this.repo.findAll(userId, predicate),
+			totalItems: await this.repo.getCount(userId),
+			page: 1
+		};
+	}
 }
 
 export default new SubscriptionService(SubscriptionRepositoryImpl);

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { SubscriptionDto } from '$lib/dtos/subscription';
+	import type { SubscriptionsDto } from '$lib/dtos/subscription';
 	import * as Table from '$lib/components/ui/table';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
@@ -12,8 +12,10 @@
 		action?: (header: Header) => void;
 	};
 
-	export let data: SubscriptionDto[];
+	export let subscriptions: SubscriptionsDto;
 	export let checkedRows: string[] = [];
+
+	$: console.log(subscriptions);
 
 	let headers = [
 		{
@@ -54,7 +56,7 @@
 		}
 	] as Header[];
 
-	$: selectAll = checkedRows.length === data.length;
+	$: selectAll = checkedRows.length === subscriptions.data.length;
 
 	/**
 	 * Updates the sort state based on the header clicked
@@ -89,7 +91,7 @@
 
 		// Update url
 		updateUrl([
-			{ key: 'sort', value: header.sort === null ? null : header.key },
+			{ key: 'sortBy', value: header.sort === null ? null : header.key },
 			{ key: 'order', value: header.sort }
 		]);
 	}
@@ -123,7 +125,7 @@
 		selectAll = !selectAll;
 
 		if (selectAll) {
-			checkedRows = data.map((d) => d.id);
+			checkedRows = subscriptions.data.map((d) => d.id);
 		} else {
 			checkedRows = [];
 		}
@@ -149,10 +151,10 @@
 							}}
 						>
 							{header.label}
-							{#if header.sort === 'asc'}
+							{#if header.sort === 'desc'}
 								<MoveUp class="w-4" />
 							{/if}
-							{#if header.sort === 'desc'}
+							{#if header.sort === 'asc'}
 								<MoveDown class="w-4" />
 							{/if}
 						</button>
@@ -164,7 +166,7 @@
 		</Table.Row>
 	</Table.Header>
 	<Table.Body>
-		{#each data as subscription, i (i)}
+		{#each subscriptions.data as subscription, i (i)}
 			<Table.Row>
 				<Table.Cell>
 					<input type="checkbox" value={subscription.id} bind:group={checkedRows} />
