@@ -18,6 +18,7 @@ class SubscriptionRepositoryImpl implements SubscriptionRepository {
 		});
 	}
 
+	// TODO: Test
 	public async findAll(userId: string, predicate?: Record<string, string>) {
 		const orderBy = {} as Record<string, string>;
 		if (predicate && predicate['sortBy'] && predicate['order']) {

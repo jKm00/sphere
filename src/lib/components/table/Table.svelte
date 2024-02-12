@@ -1,10 +1,12 @@
 <script lang="ts">
-	import type { SubscriptionsDto } from '$lib/dtos/subscription';
+	import type { SingleSubscriptionDto, SubscriptionsDto } from '$lib/dtos/subscription';
 	import * as Table from '$lib/components/ui/table';
 	import * as Pagination from '$lib/components/ui/pagination';
+	import * as Dialog from '$lib/components/ui/dialog';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { MoveDown, MoveUp } from 'lucide-svelte';
+	import TableAction from './TableAction.svelte';
 
 	type Header = {
 		key: string;
@@ -55,11 +57,15 @@
 		}
 	] as Header[];
 
+	let viewingSubscription: SingleSubscriptionDto | null = null;
+	$: openViewDialog = viewingSubscription !== null;
+
 	$: selectAll = checkedRows.length === subscriptions.data.length;
 
-	$: currentPage = Number($page.url.searchParams.get('page'));
-
-	$: console.log(currentPage);
+	$: currentPage =
+		Number($page.url.searchParams.get('page')) === 0
+			? 1
+			: Number($page.url.searchParams.get('page'));
 
 	/**
 	 * Updates the sort state based on the header clicked
@@ -109,7 +115,7 @@
 		} else if (newPage > Math.ceil(subscriptions.totalItems / subscriptions.pageSize)) {
 			newPage = Math.ceil(subscriptions.totalItems / subscriptions.pageSize);
 		}
-
+		checkedRows = [];
 		updateUrl([{ key: 'page', value: `${newPage}` }]);
 	}
 
@@ -147,8 +153,13 @@
 			checkedRows = [];
 		}
 	}
+
+	function handleViewDetails(event: CustomEvent<SingleSubscriptionDto>) {
+		viewingSubscription = event.detail;
+	}
 </script>
 
+<!-- Table -->
 <Table.Root>
 	<Table.Header>
 		<Table.Row>
@@ -179,6 +190,7 @@
 					{/if}
 				</Table.Head>
 			{/each}
+			<Table.Head class="w-10"></Table.Head>
 		</Table.Row>
 	</Table.Header>
 	<Table.Body>
@@ -190,8 +202,12 @@
 				<Table.Cell>{subscription.id}</Table.Cell>
 				<Table.Cell>{subscription.company}</Table.Cell>
 				<Table.Cell>{subscription.amount} {subscription.currency}</Table.Cell>
-				<Table.Cell>{subscription.period}</Table.Cell>
-				<Table.Cell>{subscription.type}</Table.Cell>
+				<Table.Cell
+					>{subscription.period[0].toUpperCase()}{subscription.period.substring(1)}</Table.Cell
+				>
+				<Table.Cell>{subscription.type[0].toUpperCase()}{subscription.type.substring(1)}</Table.Cell
+				>
+				<Table.Cell><TableAction on:view={handleViewDetails} {subscription} /></Table.Cell>
 			</Table.Row>
 		{/each}
 	</Table.Body>
@@ -199,7 +215,7 @@
 
 <!-- Table controlls -->
 <div class="flex items-center justify-between">
-	<p>{checkedRows.length} of {subscriptions.pageSize} row(s) selected</p>
+	<p>{checkedRows.length} of {subscriptions.data.length} row(s) selected</p>
 	<Pagination.Root
 		count={subscriptions.totalItems}
 		perPage={subscriptions.pageSize}
@@ -235,3 +251,50 @@
 		</Pagination.Content>
 	</Pagination.Root>
 </div>
+
+<!-- Subscription details dialog -->
+<Dialog.Root bind:open={openViewDialog} onOpenChange={() => (viewingSubscription = null)}>
+	<Dialog.Content>
+		<Dialog.Header>
+			<Dialog.Title>{viewingSubscription?.id}</Dialog.Title>
+			<Dialog.Description>Viewing details of {viewingSubscription?.id}</Dialog.Description>
+		</Dialog.Header>
+		<div class="grid gap-4">
+			<div>
+				<h3 class="text-xs text-muted-foreground">Company</h3>
+				<p>{viewingSubscription?.company}</p>
+			</div>
+			<div>
+				<h3 class="text-xs text-muted-foreground">Description</h3>
+				<p>
+					{viewingSubscription?.description === ''
+						? 'No descrpition provided'
+						: viewingSubscription?.description}
+				</p>
+			</div>
+			<div>
+				<h3 class="text-xs text-muted-foreground">Amount</h3>
+				<p>
+					{viewingSubscription?.amount}
+					{viewingSubscription?.currency} / {viewingSubscription?.period[0].toUpperCase()}{viewingSubscription?.period.substring(
+						1
+					)}
+				</p>
+			</div>
+			<div>
+				<h3 class="text-xs text-muted-foreground">Subscription type</h3>
+				<p>{viewingSubscription?.type[0].toUpperCase()}{viewingSubscription?.type.substring(1)}</p>
+			</div>
+			<div>
+				<h3 class="text-xs text-muted-foreground">URL</h3>
+				{#if viewingSubscription?.url === ''}
+					<p>No url provided</p>
+				{:else}
+					<a href={viewingSubscription?.url} target="_blank" class="text-primary underline"
+						>{viewingSubscription?.url}</a
+					>
+				{/if}
+			</div>
+		</div>
+	</Dialog.Content>
+</Dialog.Root>
