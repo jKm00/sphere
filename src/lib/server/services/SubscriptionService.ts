@@ -27,6 +27,13 @@ export class SubscriptionService {
 		return await this.repo.save(userId, subscriptionWithId);
 	}
 
+	/**
+	 * Returns all subscriptions for a given user matching the given predicates
+	 * @param userId id of the user
+	 * @param predicate sortBy, order, page, and pageSize
+	 * @returns and object with a list of all subscriptions matching the predicates
+	 * and the total number of subscriptions for the user
+	 */
 	public async getAllSubscriptions(userId: string, predicate?: Record<string, string>) {
 		return {
 			data: await this.repo.findAll(userId, predicate),
