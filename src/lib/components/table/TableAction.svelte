@@ -7,7 +7,7 @@
 
 	export let subscription: SingleSubscriptionDto;
 
-	const dispatch = createEventDispatcher<{ view: SingleSubscriptionDto }>();
+	const dispatch = createEventDispatcher<{ view: SingleSubscriptionDto; delete: string }>();
 </script>
 
 <DropdownMenu.Root>
@@ -34,7 +34,10 @@
 				</DropdownMenu.Item>
 			{/if}
 			<DropdownMenu.Separator />
-			<DropdownMenu.Item class="text-destructive">
+			<DropdownMenu.Item
+				on:click={() => dispatch('delete', subscription.id)}
+				class="text-destructive"
+			>
 				<BadgeX class="mr-2 h-4 w-4" />
 				Delete
 			</DropdownMenu.Item>
