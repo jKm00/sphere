@@ -91,17 +91,20 @@ export const actions = {
 				url: url ?? ''
 			});
 		} catch (e) {
-			return message(form, 'Failed to add subscription', {
+			return message(form, 'Failed to add subscription. Please try again!', {
 				status: 500
 			});
 		}
 
+		let redirectTo = event.url.searchParams.get('redirectTo') ?? '/dashboard';
+		redirectTo = redirectTo.replace(':', '?').replace(',', '&');
+
 		redirect(
 			302,
-			'/dashboard',
+			redirectTo,
 			{
 				type: 'success',
-				message: 'Successfully saved subscription!'
+				message: 'Subscription saved!'
 			},
 			event
 		);
@@ -119,6 +122,9 @@ export const actions = {
 			});
 		}
 
+		let redirectTo = event.url.searchParams.get('redirectTo') ?? '/dashboard';
+		redirectTo = redirectTo.replace(':', '?').replace(',', '&');
+
 		const { ids } = form.data;
 		const items = ids.split(',');
 
@@ -127,7 +133,7 @@ export const actions = {
 		} catch (error) {
 			redirect(
 				302,
-				'/dashboard',
+				redirectTo,
 				{
 					type: 'error',
 					message: 'Failed to delete subscriptions. Please try again!'
@@ -138,10 +144,10 @@ export const actions = {
 
 		redirect(
 			302,
-			'/dashboard',
+			redirectTo,
 			{
 				type: 'success',
-				message: 'Subscriptions deleted successfully!'
+				message: 'Subscriptions deleted!'
 			},
 			event
 		);

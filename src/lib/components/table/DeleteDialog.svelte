@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { page } from '$app/stores';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import { Button } from '$lib/components/ui/button';
 	import type { DeleteSubscriptionsSchema } from '$lib/schemas/subscription';
@@ -34,7 +35,13 @@
 		</AlertDialog.Header>
 		<AlertDialog.Footer>
 			<AlertDialog.Cancel on:click={() => (items = [])}>Cancel</AlertDialog.Cancel>
-			<form method="POST" action="?/deleteSubscriptions" use:enhance>
+			<form
+				method="POST"
+				action="?/deleteSubscriptions&redirectTo=/dashboard:{$page.url.searchParams
+					.toString()
+					.replace('&', ',')}"
+				use:enhance
+			>
 				<input type="hidden" name="ids" value={items} />
 				<AlertDialog.Action
 					type="submit"

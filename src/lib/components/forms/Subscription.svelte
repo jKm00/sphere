@@ -84,7 +84,9 @@
 		</Sheet.Header>
 		<form
 			method="POST"
-			action="?/saveSubscription"
+			action="?/saveSubscription&redirectTo=/dashboard:{$page.url.searchParams
+				.toString()
+				.replace('&', ',')}"
 			use:enhance
 			class="mt-4 grid flex-grow content-start gap-4 overflow-y-auto"
 		>
