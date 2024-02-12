@@ -295,7 +295,7 @@
 				{#if viewingSubscription?.url === ''}
 					<p>No url provided</p>
 				{:else}
-					<a href={viewingSubscription?.url} target="_blank" class="text-primary underline"
+					<a href={viewingSubscription?.url} target="_blank" class="text-link underline"
 						>{viewingSubscription?.url}</a
 					>
 				{/if}

@@ -36,6 +36,7 @@ const config = {
 					DEFAULT: 'hsl(var(--additive) / <alpha-value>)',
 					foreground: 'hsl(var(--additive-foreground) / <alpha-value>)'
 				},
+				link: 'hsl(var(--link) / <alpha-value>)',
 				muted: {
 					DEFAULT: 'hsl(var(--muted) / <alpha-value>)',
 					foreground: 'hsl(var(--muted-foreground) / <alpha-value>)'
