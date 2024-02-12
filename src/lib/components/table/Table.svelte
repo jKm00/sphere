@@ -5,12 +5,13 @@
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { MoveDown, MoveUp } from 'lucide-svelte';
+	import { ArrowUpRightFromSquare, MoveDown, MoveUp } from 'lucide-svelte';
 	import TableAction from './TableAction.svelte';
 
 	type Header = {
 		key: string;
 		label: string;
+		width?: string;
 		sort?: 'asc' | 'desc' | null;
 		action?: (header: Header) => void;
 	};
@@ -21,7 +22,8 @@
 	let headers = [
 		{
 			key: 'id',
-			label: 'ID'
+			label: 'ID',
+			width: 'w-40'
 		},
 		{
 			key: 'company',
@@ -167,7 +169,7 @@
 				<input type="checkbox" on:click={handleAllSelect} bind:checked={selectAll} />
 			</Table.Head>
 			{#each headers as header (header.key)}
-				<Table.Head>
+				<Table.Head class={header.width ? header.width : ''}>
 					{#if header.action}
 						<button
 							class="flex items-center gap-1"
@@ -291,7 +293,9 @@
 				<p>{viewingSubscription?.type[0].toUpperCase()}{viewingSubscription?.type.substring(1)}</p>
 			</div>
 			<div>
-				<h3 class="text-xs text-muted-foreground">URL</h3>
+				<h3 class="flex items-center text-xs text-muted-foreground">
+					URL <ArrowUpRightFromSquare class="ml-2 h-3 w-3" />
+				</h3>
 				{#if viewingSubscription?.url === ''}
 					<p>No url provided</p>
 				{:else}
