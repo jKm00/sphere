@@ -40,6 +40,15 @@ export class SubscriptionService {
 			totalItems: await this.repo.getCount(userId)
 		};
 	}
+
+	/**
+	 * Deletes the subscriptions with the given ids
+	 * @param userId owner of the subscriptions
+	 * @param ids an array containing the ids of the subscriptions to delete
+	 */
+	public async deleteSubscriptions(userId: string, ids: string[]) {
+		return await this.repo.deleteAll(userId, ids);
+	}
 }
 
 export default new SubscriptionService(SubscriptionRepositoryImpl);

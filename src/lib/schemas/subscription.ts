@@ -14,3 +14,9 @@ export const subscriptionSchema = z.object({
 });
 
 export type SubscriptionSchema = typeof subscriptionSchema;
+
+export const deleteSubscriptionsSchema = z.object({
+	ids: z.string({ required_error: 'Ids are required' }).min(1, 'Ids are required')
+});
+
+export type DeleteSubscriptionsSchema = typeof deleteSubscriptionsSchema;

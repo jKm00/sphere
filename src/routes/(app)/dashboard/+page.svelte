@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import TableSection from '$lib/components/sections/TableSection.svelte';
+	import TableSection from '$lib/components/table/TableSection.svelte';
 	import { toast } from 'svelte-sonner';
 	import { getFlash } from 'sveltekit-flash-message';
 	import type { PageData } from './$types';
@@ -21,4 +21,8 @@
 </script>
 
 <!-- Section: Key numbers -->
-<TableSection subscriptionForm={data.subscriptionForm} subscriptions={data.subscriptions} />
+<TableSection
+	subscriptionForm={data.subscriptionForm}
+	deleteSubscriptionsForm={data.deleteSubscriptionsForm}
+	subscriptions={data.subscriptions}
+/>

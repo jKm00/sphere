@@ -26,4 +26,12 @@ export interface SubscriptionRepository {
 	 * @param userId to count subscriptions
 	 */
 	getCount(userId: string): Promise<number>;
+
+	/**
+	 * Deletes the subscriptions with the given ids.
+	 * The subscriptions must belong to the given user
+	 * @param userId owner of the subscriptions
+	 * @param ids of the subscriptions to delete
+	 */
+	deleteAll(userId: string, ids: string[]): Promise<void>;
 }

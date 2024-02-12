@@ -57,6 +57,17 @@ export class SubscriptionRepositoryImpl implements SubscriptionRepository {
 			}
 		});
 	}
+
+	public async deleteAll(userId: string, ids: string[]) {
+		await this.db.subscription.deleteMany({
+			where: {
+				userId,
+				id: {
+					in: ids
+				}
+			}
+		});
+	}
 }
 
 export default new SubscriptionRepositoryImpl(db);

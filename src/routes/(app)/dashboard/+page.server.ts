@@ -1,7 +1,7 @@
 import { fail } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { message, superValidate } from 'sveltekit-superforms/server';
-import { subscriptionSchema } from '$lib/schemas/subscription';
+import { deleteSubscriptionsSchema, subscriptionSchema } from '$lib/schemas/subscription';
 import SubscriptionService from '$lib/server/services/SubscriptionService';
 import { redirect } from 'sveltekit-flash-message/server';
 import type { SubscriptionsDto } from '$lib/dtos/subscription';
@@ -52,6 +52,7 @@ export const load: PageServerLoad = async (event) => {
 
 	return {
 		subscriptionForm: await superValidate(subscriptionSchema),
+		deleteSubscriptionsForm: await superValidate(deleteSubscriptionsSchema),
 		subscriptions
 	};
 };
@@ -93,6 +94,46 @@ export const actions = {
 			{
 				type: 'success',
 				message: 'Successfully added subscription!'
+			},
+			event
+		);
+	},
+	deleteSubscriptions: async (event) => {
+		if (!event.locals.user) {
+			redirect(302, '/login?redirect=/dashboard');
+		}
+
+		const form = await superValidate(event, deleteSubscriptionsSchema);
+
+		if (!form.valid) {
+			return fail(400, {
+				form
+			});
+		}
+
+		const { ids } = form.data;
+		const items = ids.split(',');
+
+		try {
+			await SubscriptionService.deleteSubscriptions(event.locals.user.id, items);
+		} catch (error) {
+			redirect(
+				302,
+				'/dashboard',
+				{
+					type: 'error',
+					message: 'Failed to delete subscriptions. Please try again!'
+				},
+				event
+			);
+		}
+
+		redirect(
+			302,
+			'/dashboard',
+			{
+				type: 'success',
+				message: 'Subscriptions deleted successfully!'
 			},
 			event
 		);
