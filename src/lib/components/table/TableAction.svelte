@@ -1,7 +1,7 @@
 <script lang="ts">
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import { Button } from '$lib/components/ui/button';
-	import { MoreHorizontal } from 'lucide-svelte';
+	import { ArrowUpRightFromSquare, BadgeX, Eye, MoreHorizontal, Pencil } from 'lucide-svelte';
 	import type { SingleSubscriptionDto } from '$lib/dtos/subscription';
 	import { createEventDispatcher } from 'svelte';
 
@@ -19,12 +19,25 @@
 	</DropdownMenu.Trigger>
 	<DropdownMenu.Content>
 		<DropdownMenu.Group>
-			<DropdownMenu.Item on:click={() => dispatch('view', subscription)}
-				>View details</DropdownMenu.Item
-			>
-			<DropdownMenu.Item>Edit details</DropdownMenu.Item>
+			<DropdownMenu.Item on:click={() => dispatch('view', subscription)}>
+				<Eye class="mr-2 h-4 w-4" />
+				View details
+			</DropdownMenu.Item>
+			<DropdownMenu.Item>
+				<Pencil class="mr-2 h-4 w-4" />
+				Edit details
+			</DropdownMenu.Item>
+			{#if subscription.url}
+				<DropdownMenu.Item href={subscription.url} target="_blank">
+					<ArrowUpRightFromSquare class="mr-2 h-4 w-4" />
+					Go to subscription
+				</DropdownMenu.Item>
+			{/if}
 			<DropdownMenu.Separator />
-			<DropdownMenu.Item class="text-destructive">Delete</DropdownMenu.Item>
+			<DropdownMenu.Item class="text-destructive">
+				<BadgeX class="mr-2 h-4 w-4" />
+				Delete
+			</DropdownMenu.Item>
 		</DropdownMenu.Group>
 	</DropdownMenu.Content>
 </DropdownMenu.Root>
