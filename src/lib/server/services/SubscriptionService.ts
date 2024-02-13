@@ -41,7 +41,11 @@ export class SubscriptionService {
 	 * @returns and object with a list of all subscriptions matching the predicates
 	 * and the total number of subscriptions for the user
 	 */
-	public async getAllSubscriptions(userId: string, predicate?: Record<string, string>) {
+	public async getAllSubscriptions(
+		userId: string,
+		predicate?: Record<string, string>,
+		currency?: string
+	) {
 		return {
 			data: await this.repo.findAll(userId, predicate),
 			totalItems: await this.repo.getCount(userId)

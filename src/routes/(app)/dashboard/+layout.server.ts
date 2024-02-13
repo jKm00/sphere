@@ -6,17 +6,22 @@ import type { PageServerLoad } from './$types';
 // This happens only for server files in this route.
 //@ts-ignore
 export const load: PageServerLoad = async (event) => {
-	let user: UserDto | null = null;
-	if (event.locals.user) {
-		const foundUser = await UserService.getUser(event.locals.user?.id);
+	async function fetchUser() {
+		let user: UserDto | null = null;
+		if (event.locals.user) {
+			const foundUser = await UserService.getUser(event.locals.user?.id);
 
-		if (foundUser) {
-			user = {
-				id: foundUser.id,
-				email: foundUser.email
-			};
+			if (foundUser) {
+				user = {
+					id: foundUser.id,
+					email: foundUser.email
+				};
+			}
 		}
+		return user;
 	}
+
+	const [user] = await Promise.all([fetchUser()]);
 
 	return {
 		user

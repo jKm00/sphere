@@ -11,6 +11,8 @@
 	import { Loader2 } from 'lucide-svelte';
 	import type { ActionResult } from '@sveltejs/kit';
 	import type { SingleSubscriptionDto } from '$lib/dtos/subscription';
+	import { currencies } from '$lib/currency';
+	import { periods } from '$lib/period';
 
 	export let subscriptionForm: SuperValidated<SubscriptionSchema>;
 	export let showTrigger = true;
@@ -30,20 +32,6 @@
 	const { errors, enhance, delayed, message } = superForm(subscriptionForm, {
 		onResult: handleFormResult
 	});
-
-	const currencies = [
-		{ value: 'USD', label: '($) USD' },
-		{ value: 'EUR', label: '(€) EUR' },
-		{ value: 'GBP', label: '(£) GBP' },
-		{ value: 'NOK', label: '(kr) NOK' }
-	];
-
-	const periods = [
-		{ value: 'day', label: 'Daily' },
-		{ value: 'week', label: 'Weekly' },
-		{ value: 'month', label: 'Monthly' },
-		{ value: 'year', label: 'Yearly' }
-	];
 
 	const types = [
 		{ value: 'streaming', label: 'Streaming' },
@@ -144,8 +132,12 @@
 						<Select.Content>
 							<Select.Group>
 								{#each currencies as currency}
-									<Select.Item value={currency.value} label={currency.label} class="pl-2">
-										{currency.label}
+									<Select.Item
+										value={currency.value}
+										label="({currency.symbol}) {currency.label}"
+										class="pl-2"
+									>
+										({currency.symbol}) {currency.label}
 									</Select.Item>
 								{/each}
 							</Select.Group>
