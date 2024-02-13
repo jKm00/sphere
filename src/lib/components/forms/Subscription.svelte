@@ -15,7 +15,6 @@
 	import { periods } from '$lib/period';
 
 	export let subscriptionForm: SuperValidated<SubscriptionSchema>;
-	export let showTrigger = true;
 	export let mode: 'add' | 'edit' = 'add';
 	export let open = false;
 
@@ -58,11 +57,9 @@
 </script>
 
 <Sheet.Root bind:open onOpenChange={close}>
-	{#if showTrigger}
-		<Sheet.Trigger asChild let:builder>
-			<Button builders={[builder]}>Add new</Button>
-		</Sheet.Trigger>
-	{/if}
+	<Sheet.Trigger asChild let:builder>
+		<Button builders={[builder]}>Add new</Button>
+	</Sheet.Trigger>
 	<Sheet.Content side="right" class="flex flex-col">
 		<Sheet.Header>
 			<Sheet.Title>{mode === 'add' ? 'Add new' : 'Edit'} subscription</Sheet.Title>

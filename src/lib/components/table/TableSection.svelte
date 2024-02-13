@@ -34,7 +34,7 @@
 <section>
 	<header class="mb-4 flex items-center justify-between">
 		<h2 class="text-xl font-bold">Your subscriptions</h2>
-		<div>
+		<div class="flex gap-2">
 			<DeleteDialog
 				bind:open={openDeleteDialog}
 				bind:items={checkedRows}
