@@ -23,9 +23,13 @@ export const load: PageServerLoad = async (event) => {
 	}
 
 	function getPrefferedCurrency() {
+		// Get currency
 		let currency = event.cookies.get('currency');
+		// Check if it's valid
+		const foundCurrency = currencies.find((c) => c.value === currency);
 
-		if (!currency) {
+		// If not valid, set to default
+		if (!foundCurrency) {
 			currency = currencies[0].value;
 		}
 
