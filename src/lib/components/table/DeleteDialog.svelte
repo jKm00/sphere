@@ -9,7 +9,6 @@
 
 	export let form: SuperValidated<DeleteSubscriptionsSchema>;
 	export let items: string[] = [];
-	export let showTrigger = true;
 	export let open = false;
 
 	const { enhance, delayed } = superForm(form, {
@@ -18,13 +17,9 @@
 </script>
 
 <AlertDialog.Root bind:open>
-	{#if showTrigger}
-		<AlertDialog.Trigger asChild let:builder>
-			<Button disabled={items.length === 0} builders={[builder]} variant="destructive"
-				>Delete</Button
-			>
-		</AlertDialog.Trigger>
-	{/if}
+	<AlertDialog.Trigger asChild let:builder>
+		<Button disabled={items.length === 0} builders={[builder]} variant="destructive">Delete</Button>
+	</AlertDialog.Trigger>
 	<AlertDialog.Content>
 		<AlertDialog.Header>
 			<AlertDialog.Title>Are you sure you want to delete?</AlertDialog.Title>

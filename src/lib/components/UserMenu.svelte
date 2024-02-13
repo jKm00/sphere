@@ -6,8 +6,10 @@
 	import { LogOut, Settings, User } from 'lucide-svelte';
 	import Separator from './ui/separator/separator.svelte';
 	import { version } from '$lib/version';
+	import CurrencyDropdown from './CurrencyDropdown.svelte';
 
 	export let user: UserDto;
+	export let currency: string;
 </script>
 
 <Popover.Root portal={null}>
@@ -25,6 +27,7 @@
 			<h2 class="px-4">{user.email}</h2>
 			<Separator class="my-2" />
 			<ThemeDropdown />
+			<CurrencyDropdown {currency} />
 			<Button
 				variant="ghost"
 				class="flex items-center justify-between rounded-none font-normal"
@@ -35,6 +38,7 @@
 				<Settings class="w-4" />
 			</Button>
 			<Button
+				data-sveltekit-preload-data="off"
 				href="/logout"
 				variant="ghost"
 				class="flex items-center justify-between rounded-none font-normal"

@@ -1,3 +1,4 @@
+import { currencies } from '$lib/currency';
 import type { UserDto } from '$lib/dtos/user';
 import UserService from '$lib/server/services/UserService';
 import type { PageServerLoad } from './$types';
@@ -21,9 +22,20 @@ export const load: PageServerLoad = async (event) => {
 		return user;
 	}
 
+	function getPrefferedCurrency() {
+		let currency = event.cookies.get('currency');
+
+		if (!currency) {
+			currency = currencies[0].value;
+		}
+
+		return currency;
+	}
+
 	const [user] = await Promise.all([fetchUser()]);
 
 	return {
-		user
+		user,
+		currency: getPrefferedCurrency()
 	};
 };
