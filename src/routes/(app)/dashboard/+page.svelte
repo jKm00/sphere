@@ -4,6 +4,7 @@
 	import { toast } from 'svelte-sonner';
 	import { getFlash } from 'sveltekit-flash-message';
 	import type { PageData } from './$types';
+	import KeyCardSection from '$lib/components/keycards/KeyCardSection.svelte';
 
 	export let data: PageData;
 
@@ -20,7 +21,7 @@
 	}
 </script>
 
-<!-- Section: Key numbers -->
+<KeyCardSection />
 <TableSection
 	subscriptionForm={data.subscriptionForm}
 	deleteSubscriptionsForm={data.deleteSubscriptionsForm}
