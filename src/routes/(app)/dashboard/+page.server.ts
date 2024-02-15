@@ -5,6 +5,8 @@ import { deleteSubscriptionsSchema, subscriptionSchema } from '$lib/schemas/subs
 import SubscriptionService from '$lib/server/services/SubscriptionService';
 import { redirect } from 'sveltekit-flash-message/server';
 import type { SubscriptionsDto } from '$lib/dtos/subscription';
+import { getRedirectUrl } from '$lib/server/utils';
+import UserService from '$lib/server/services/UserService';
 
 // For some reason, ts complains about the event type not being defined.
 // This happens only for server files in this route.
@@ -100,8 +102,7 @@ export const actions = {
 			});
 		}
 
-		let redirectTo = event.url.searchParams.get('redirectTo') ?? '/dashboard';
-		redirectTo = redirectTo.replace(':', '?').replace(',', '&');
+		const redirectTo = getRedirectUrl(event.url.searchParams.get('redirectTo'), '/dashboard');
 
 		redirect(
 			302,
@@ -126,8 +127,7 @@ export const actions = {
 			});
 		}
 
-		let redirectTo = event.url.searchParams.get('redirectTo') ?? '/dashboard';
-		redirectTo = redirectTo.replace(':', '?').replace(',', '&');
+		const redirectTo = getRedirectUrl(event.url.searchParams.get('redirectTo'), '/dashboard');
 
 		const { ids } = form.data;
 		const items = ids.split(',');
@@ -156,7 +156,38 @@ export const actions = {
 			event
 		);
 	},
-	updateCurrency: async ({ request }) => {
-		console.log(await request.formData());
+	updateCurrency: async (event) => {
+		if (!event.locals.user) {
+			redirect(302, '/login?redirect=/dashboard');
+		}
+
+		const form = await event.request.formData();
+		const currency = form.get('currency');
+
+		const redirectTo = getRedirectUrl(event.url.searchParams.get('redirectTo'), '/dashboard');
+
+		try {
+			UserService.updateCurrency(event.locals.user.id, `${currency}`);
+		} catch (error) {
+			redirect(
+				302,
+				redirectTo,
+				{
+					type: 'error',
+					message: 'Failed to update preffered currency. Please try again!'
+				},
+				event
+			);
+		}
+
+		redirect(
+			302,
+			redirectTo,
+			{
+				type: 'success',
+				message: 'Preffered currency updated!'
+			},
+			event
+		);
 	}
 };
