@@ -155,5 +155,8 @@ export const actions = {
 			},
 			event
 		);
+	},
+	updateCurrency: async ({ request }) => {
+		console.log(await request.formData());
 	}
 };

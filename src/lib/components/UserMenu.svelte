@@ -9,7 +9,6 @@
 	import CurrencyDropdown from './CurrencyDropdown.svelte';
 
 	export let user: UserDto;
-	export let currency: string;
 </script>
 
 <Popover.Root portal={null}>
@@ -27,7 +26,7 @@
 			<h2 class="px-4">{user.email}</h2>
 			<Separator class="my-2" />
 			<ThemeDropdown />
-			<CurrencyDropdown {currency} />
+			<CurrencyDropdown currency={user.prefferedCurrency} />
 			<Button
 				variant="ghost"
 				class="flex items-center justify-between rounded-none font-normal"

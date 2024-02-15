@@ -11,13 +11,15 @@ datasource db {
 }
 
 model User {
-  id              String         @id
-  createdAt       DateTime       @default(now())
-  email           String         @unique
-  hashed_password String
-  salt            String
-  sessions        Session[]
-  subscriptions   Subscription[]
+  id                String         @id
+  createdAt         DateTime       @default(now())
+  email             String         @unique
+  prefferedCurrency String         @default("EUR")
+  prefferedPeriod   String         @default("monthly")
+  hashed_password   String
+  salt              String
+  sessions          Session[]
+  subscriptions     Subscription[]
 }
 
 model Session {

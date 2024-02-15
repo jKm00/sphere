@@ -4,19 +4,18 @@
 	import * as Select from '$lib/components/ui/select';
 	import { currencies } from '$lib/currency';
 	import { page } from '$app/stores';
+	import { enhance } from '$app/forms';
 
 	export let currency: string;
 
+	let form: HTMLFormElement;
+	let hiddenInput: HTMLInputElement;
+
 	$: selected = currencies.find((c) => c.value === currency) || undefined;
 
-	function handleClick(value: string) {
-		if (browser) {
-			document.cookie = `currency=${value}; path=/; max-age=${60 * 60 * 24 * 365}`;
-
-			goto(`${$page.url.pathname}${$page.url.search}`, {
-				invalidateAll: true
-			});
-		}
+	function handleClick(currency: { value: string; label: string; symbol: string }) {
+		hiddenInput.value = currency.value;
+		form.requestSubmit();
 	}
 </script>
 
@@ -29,15 +28,20 @@
 		<Select.Content>
 			<Select.Group>
 				<Select.Label>Currency</Select.Label>
-				{#each currencies as currency}
-					<Select.Item
-						on:click={() => handleClick(currency.value)}
-						value={currency.value}
-						label={currency.label}
-					>
-						{currency.label}
-					</Select.Item>
-				{/each}
+				<form bind:this={form} method="POST" action="/dashboard/?/updateCurrency" use:enhance>
+					<input bind:this={hiddenInput} type="hidden" name="currency" />
+					{#each currencies as currency}
+						<Select.Item
+							value={currency.value}
+							label={currency.label}
+							on:click={() => handleClick(currency)}
+						>
+							<!-- <button type="submit" class="bg-red-400"> -->
+							{currency.label}
+							<!-- </button> -->
+						</Select.Item>
+					{/each}
+				</form>
 			</Select.Group>
 		</Select.Content>
 	</Select.Root>

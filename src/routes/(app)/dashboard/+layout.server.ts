@@ -15,31 +15,18 @@ export const load: PageServerLoad = async (event) => {
 			if (foundUser) {
 				user = {
 					id: foundUser.id,
-					email: foundUser.email
+					email: foundUser.email,
+					prefferedCurrency: foundUser.prefferedCurrency,
+					prefferedPeriod: foundUser.prefferedPeriod
 				};
 			}
 		}
 		return user;
 	}
 
-	function getPrefferedCurrency() {
-		// Get currency
-		let currency = event.cookies.get('currency');
-		// Check if it's valid
-		const foundCurrency = currencies.find((c) => c.value === currency);
-
-		// If not valid, set to default
-		if (!foundCurrency) {
-			currency = currencies[0].value;
-		}
-
-		return currency;
-	}
-
 	const [user] = await Promise.all([fetchUser()]);
 
 	return {
-		user,
-		currency: getPrefferedCurrency()
+		user
 	};
 };

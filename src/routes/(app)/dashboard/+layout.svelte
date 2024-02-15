@@ -4,12 +4,12 @@
 
 	export let data: PageData;
 
-	$: ({ user, currency } = data);
+	$: ({ user } = data);
 </script>
 
 <header class="flex items-center justify-between p-4">
 	<h1 class="text-xl font-bold uppercase"><a href="/dashboard">Sphere</a></h1>
-	<UserMenu {user} {currency} />
+	<UserMenu {user} />
 </header>
 <main class="width m-auto p-4">
 	<slot />
