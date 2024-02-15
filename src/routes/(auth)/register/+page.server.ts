@@ -43,15 +43,34 @@ export const actions: Actions = {
 			});
 		}
 
-		// Using flash message to redirect with a message
-		// This message is caught in the login page and displayed
-		// in a toast
+		// Login user
+		try {
+			const sessionCookie = await AuthService.login(email, password);
+			event.cookies.set(sessionCookie.name, sessionCookie.value, {
+				path: '.',
+				...sessionCookie.attributes
+			});
+		} catch (error) {
+			// If login fails, redirect to login page
+			// so they can try again
+			redirect(
+				302,
+				'/login?register=success',
+				{
+					type: 'success',
+					message: 'User created successfully!'
+				},
+				event
+			);
+		}
+
+		// On login success, redirect to dashboard
 		redirect(
 			302,
-			'/login?register=success',
+			'/dashboard',
 			{
 				type: 'success',
-				message: 'User created successfully!'
+				message: 'Welcome to your dashboard!'
 			},
 			event
 		);
