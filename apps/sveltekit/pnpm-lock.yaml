@@ -4,142 +4,138 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-importers:
+dependencies:
+  '@internationalized/date':
+    specifier: ^3.5.1
+    version: 3.5.1
+  '@lucia-auth/adapter-prisma':
+    specifier: ^4.0.0
+    version: 4.0.0(@prisma/client@5.9.1)(lucia@3.0.1)
+  '@prisma/client':
+    specifier: ^5.9.1
+    version: 5.9.1(prisma@5.9.1)
+  bits-ui:
+    specifier: ^0.16.0
+    version: 0.16.0(svelte@4.2.7)
+  clsx:
+    specifier: ^2.1.0
+    version: 2.1.0
+  dayjs:
+    specifier: ^1.11.10
+    version: 1.11.10
+  formsnap:
+    specifier: ^0.4.3
+    version: 0.4.3(svelte@4.2.7)(sveltekit-superforms@1.13.4)(zod@3.22.4)
+  lucia:
+    specifier: ^3.0.1
+    version: 3.0.1
+  lucide-svelte:
+    specifier: ^0.321.0
+    version: 0.321.0(svelte@4.2.7)
+  mode-watcher:
+    specifier: ^0.2.0
+    version: 0.2.0(svelte@4.2.7)
+  oslo:
+    specifier: ^1.1.0
+    version: 1.1.0
+  svelte-sonner:
+    specifier: ^0.3.11
+    version: 0.3.11(svelte@4.2.7)
+  tailwind-merge:
+    specifier: ^2.2.1
+    version: 2.2.1
+  tailwind-variants:
+    specifier: ^0.1.20
+    version: 0.1.20(tailwindcss@3.3.6)
+  zod:
+    specifier: ^3.22.4
+    version: 3.22.4
 
-  .: {}
-
-  apps/sveltekit:
-    dependencies:
-      '@internationalized/date':
-        specifier: ^3.5.1
-        version: 3.5.1
-      '@lucia-auth/adapter-prisma':
-        specifier: ^4.0.0
-        version: 4.0.0(@prisma/client@5.9.1)(lucia@3.0.1)
-      '@prisma/client':
-        specifier: ^5.9.1
-        version: 5.9.1(prisma@5.9.1)
-      bits-ui:
-        specifier: ^0.16.0
-        version: 0.16.0(svelte@4.2.7)
-      clsx:
-        specifier: ^2.1.0
-        version: 2.1.0
-      dayjs:
-        specifier: ^1.11.10
-        version: 1.11.10
-      formsnap:
-        specifier: ^0.4.3
-        version: 0.4.3(svelte@4.2.7)(sveltekit-superforms@1.13.4)(zod@3.22.4)
-      lucia:
-        specifier: ^3.0.1
-        version: 3.0.1
-      lucide-svelte:
-        specifier: ^0.321.0
-        version: 0.321.0(svelte@4.2.7)
-      mode-watcher:
-        specifier: ^0.2.0
-        version: 0.2.0(svelte@4.2.7)
-      oslo:
-        specifier: ^1.1.0
-        version: 1.1.0
-      svelte-sonner:
-        specifier: ^0.3.11
-        version: 0.3.11(svelte@4.2.7)
-      tailwind-merge:
-        specifier: ^2.2.1
-        version: 2.2.1
-      tailwind-variants:
-        specifier: ^0.1.20
-        version: 0.1.20(tailwindcss@3.3.6)
-      zod:
-        specifier: ^3.22.4
-        version: 3.22.4
-    devDependencies:
-      '@playwright/test':
-        specifier: ^1.28.1
-        version: 1.28.1
-      '@sveltejs/adapter-auto':
-        specifier: ^3.0.0
-        version: 3.0.0(@sveltejs/kit@2.0.0)
-      '@sveltejs/kit':
-        specifier: ^2.0.0
-        version: 2.0.0(@sveltejs/vite-plugin-svelte@3.0.0)(svelte@4.2.7)(vite@5.0.3)
-      '@sveltejs/vite-plugin-svelte':
-        specifier: ^3.0.0
-        version: 3.0.0(svelte@4.2.7)(vite@5.0.3)
-      '@types/eslint':
-        specifier: 8.56.0
-        version: 8.56.0
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^6.0.0
-        version: 6.0.0(@typescript-eslint/parser@6.0.0)(eslint@8.56.0)(typescript@5.0.2)
-      '@typescript-eslint/parser':
-        specifier: ^6.0.0
-        version: 6.0.0(eslint@8.56.0)(typescript@5.0.2)
-      autoprefixer:
-        specifier: ^10.4.16
-        version: 10.4.16(postcss@8.4.32)
-      eslint:
-        specifier: ^8.56.0
-        version: 8.56.0
-      eslint-config-prettier:
-        specifier: ^9.1.0
-        version: 9.1.0(eslint@8.56.0)
-      eslint-plugin-svelte:
-        specifier: ^2.35.1
-        version: 2.35.1(eslint@8.56.0)(svelte@4.2.7)
-      happy-dom:
-        specifier: ^13.3.8
-        version: 13.3.8
-      jsdom:
-        specifier: ^24.0.0
-        version: 24.0.0
-      postcss:
-        specifier: ^8.4.32
-        version: 8.4.32
-      postcss-load-config:
-        specifier: ^5.0.2
-        version: 5.0.2(postcss@8.4.32)
-      prettier:
-        specifier: ^3.1.1
-        version: 3.1.1
-      prettier-plugin-svelte:
-        specifier: ^3.1.2
-        version: 3.1.2(prettier@3.1.1)(svelte@4.2.7)
-      prettier-plugin-tailwindcss:
-        specifier: ^0.5.9
-        version: 0.5.9(prettier-plugin-svelte@3.1.2)(prettier@3.1.1)
-      prisma:
-        specifier: ^5.9.1
-        version: 5.9.1
-      svelte:
-        specifier: ^4.2.7
-        version: 4.2.7
-      svelte-check:
-        specifier: ^3.6.0
-        version: 3.6.0(postcss-load-config@5.0.2)(postcss@8.4.32)(svelte@4.2.7)
-      sveltekit-flash-message:
-        specifier: ^2.4.1
-        version: 2.4.1(@sveltejs/kit@2.0.0)(svelte@4.2.7)
-      sveltekit-superforms:
-        specifier: ^1.13.4
-        version: 1.13.4(@sveltejs/kit@2.0.0)(svelte@4.2.7)(zod@3.22.4)
-      tailwindcss:
-        specifier: ^3.3.6
-        version: 3.3.6
-      tslib:
-        specifier: ^2.4.1
-        version: 2.4.1
-      typescript:
-        specifier: ^5.0.0
-        version: 5.0.2
-      vite:
-        specifier: ^5.0.3
-        version: 5.0.3
-      vitest:
-        specifier: ^1.2.0
-        version: 1.2.0(happy-dom@13.3.8)(jsdom@24.0.0)
+devDependencies:
+  '@playwright/test':
+    specifier: ^1.28.1
+    version: 1.28.1
+  '@sveltejs/adapter-auto':
+    specifier: ^3.0.0
+    version: 3.0.0(@sveltejs/kit@2.0.0)
+  '@sveltejs/kit':
+    specifier: ^2.0.0
+    version: 2.0.0(@sveltejs/vite-plugin-svelte@3.0.0)(svelte@4.2.7)(vite@5.0.3)
+  '@sveltejs/vite-plugin-svelte':
+    specifier: ^3.0.0
+    version: 3.0.0(svelte@4.2.7)(vite@5.0.3)
+  '@types/eslint':
+    specifier: 8.56.0
+    version: 8.56.0
+  '@typescript-eslint/eslint-plugin':
+    specifier: ^6.0.0
+    version: 6.0.0(@typescript-eslint/parser@6.0.0)(eslint@8.56.0)(typescript@5.0.2)
+  '@typescript-eslint/parser':
+    specifier: ^6.0.0
+    version: 6.0.0(eslint@8.56.0)(typescript@5.0.2)
+  autoprefixer:
+    specifier: ^10.4.16
+    version: 10.4.16(postcss@8.4.32)
+  eslint:
+    specifier: ^8.56.0
+    version: 8.56.0
+  eslint-config-prettier:
+    specifier: ^9.1.0
+    version: 9.1.0(eslint@8.56.0)
+  eslint-plugin-svelte:
+    specifier: ^2.35.1
+    version: 2.35.1(eslint@8.56.0)(svelte@4.2.7)
+  happy-dom:
+    specifier: ^13.3.8
+    version: 13.3.8
+  jsdom:
+    specifier: ^24.0.0
+    version: 24.0.0
+  postcss:
+    specifier: ^8.4.32
+    version: 8.4.32
+  postcss-load-config:
+    specifier: ^5.0.2
+    version: 5.0.2(postcss@8.4.32)
+  prettier:
+    specifier: ^3.1.1
+    version: 3.1.1
+  prettier-plugin-svelte:
+    specifier: ^3.1.2
+    version: 3.1.2(prettier@3.1.1)(svelte@4.2.7)
+  prettier-plugin-tailwindcss:
+    specifier: ^0.5.9
+    version: 0.5.9(prettier-plugin-svelte@3.1.2)(prettier@3.1.1)
+  prisma:
+    specifier: ^5.9.1
+    version: 5.9.1
+  svelte:
+    specifier: ^4.2.7
+    version: 4.2.7
+  svelte-check:
+    specifier: ^3.6.0
+    version: 3.6.0(postcss-load-config@5.0.2)(postcss@8.4.32)(svelte@4.2.7)
+  sveltekit-flash-message:
+    specifier: ^2.4.1
+    version: 2.4.1(@sveltejs/kit@2.0.0)(svelte@4.2.7)
+  sveltekit-superforms:
+    specifier: ^1.13.4
+    version: 1.13.4(@sveltejs/kit@2.0.0)(svelte@4.2.7)(zod@3.22.4)
+  tailwindcss:
+    specifier: ^3.3.6
+    version: 3.3.6
+  tslib:
+    specifier: ^2.4.1
+    version: 2.4.1
+  typescript:
+    specifier: ^5.0.0
+    version: 5.0.2
+  vite:
+    specifier: ^5.0.3
+    version: 5.0.3
+  vitest:
+    specifier: ^1.2.0
+    version: 1.2.0(happy-dom@13.3.8)(jsdom@24.0.0)
 
 packages:
 
