@@ -1,9 +1,6 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
-	import { goto } from '$app/navigation';
 	import * as Select from '$lib/components/ui/select';
 	import { currencies } from '$lib/currency';
-	import { page } from '$app/stores';
 	import { enhance } from '$app/forms';
 
 	export let currency: string;

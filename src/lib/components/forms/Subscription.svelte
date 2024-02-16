@@ -129,12 +129,8 @@
 						<Select.Content>
 							<Select.Group>
 								{#each currencies as currency}
-									<Select.Item
-										value={currency.value}
-										label="({currency.symbol}) {currency.label}"
-										class="pl-2"
-									>
-										({currency.symbol}) {currency.label}
+									<Select.Item value={currency.value} label={currency.label} class="pl-2">
+										{currency.label}
 									</Select.Item>
 								{/each}
 							</Select.Group>
