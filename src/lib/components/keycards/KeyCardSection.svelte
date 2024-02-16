@@ -25,13 +25,13 @@
 		{
 			icon: Hash,
 			color: 'rgb(192 132 252)',
-			value: `${numberOfSubs}`,
+			value: numberOfSubs === 0 ? '-' : `${numberOfSubs}`,
 			label: 'Number of subscriptions'
 		},
 		{
 			icon: SignalHigh,
 			color: 'rgb(251 146 60)',
-			value: `${mostExpensiveSub?.company || 'No subscriptions'}`,
+			value: `${mostExpensiveSub?.company || '-'}`,
 			label: 'Most expensive subscription'
 		}
 	];
