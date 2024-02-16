@@ -8,10 +8,9 @@
 </script>
 
 <div class="flex w-full items-center gap-4 rounded-lg border px-6 py-8 md:max-w-[300px]">
-	<svelte:component this={icon} class="h-10 w-10 text-{color}" />
+	<svelte:component this={icon} class="h-10 w-10" style="color: {color}" />
 	<div>
 		<p class="text-xl font-bold">{value}</p>
 		<p class="text-sm text-muted-foreground">{label}</p>
 	</div>
 </div>
-

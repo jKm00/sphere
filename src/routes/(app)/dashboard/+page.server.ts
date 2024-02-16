@@ -34,15 +34,22 @@ export const load: PageServerLoad = async (event) => {
 		predicate['pageSize'] = pageSize;
 
 		// Get result
-		let result: { data: SingleSubscriptionDto[]; totalItems: number };
+		let result: {
+			data: SingleSubscriptionDto[];
+			totalItems: number;
+			totalSum: number;
+			mostExpensiveSub: SingleSubscriptionDto | undefined;
+		};
 		try {
 			result = await SubscriptionService.getAllSubscriptions(event.locals.user.id, predicate);
 		} catch (err) {
 			return {
 				data: [],
+				totalSum: 0,
 				totalItems: 0,
 				page,
-				pageSize
+				pageSize,
+				mostExpensiveSub: undefined
 			} as SubscriptionsDto;
 		}
 
@@ -58,9 +65,11 @@ export const load: PageServerLoad = async (event) => {
 				type: item.type,
 				url: item.url
 			})),
+			totalSum: result.totalSum,
 			totalItems: result.totalItems,
 			page,
-			pageSize
+			pageSize,
+			mostExpensiveSub: result.mostExpensiveSub
 		} as SubscriptionsDto;
 	}
 

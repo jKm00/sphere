@@ -68,9 +68,25 @@ export class SubscriptionService {
 			);
 		}
 
+		const allSubscriptions = await this.subscriptionRepo.findAll(userId);
+
+		let allSubsConverted: SingleSubscriptionDto[] = [];
+		let mostExpensiveSub: SingleSubscriptionDto | undefined;
+		for (let i = 0; i < allSubscriptions.length; i++) {
+			if (!mostExpensiveSub || allSubscriptions[i].amount > mostExpensiveSub.amount) {
+				mostExpensiveSub = allSubscriptions[i];
+			}
+
+			allSubsConverted.push(
+				await this.convertToPrefferedCurrency(allSubscriptions[i], user.prefferedCurrency)
+			);
+		}
+
 		return {
 			data: convertedSubs,
-			totalItems: await this.subscriptionRepo.getCount(userId)
+			totalItems: allSubscriptions.length,
+			totalSum: allSubsConverted.map((sub) => sub.amount).reduce((a, b) => a + b, 0),
+			mostExpensiveSub
 		};
 	}
 

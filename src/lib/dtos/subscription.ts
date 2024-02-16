@@ -11,7 +11,9 @@ export type SingleSubscriptionDto = {
 
 export type SubscriptionsDto = {
 	data: SingleSubscriptionDto[];
+	totalSum: number;
 	totalItems: number;
 	page: number;
 	pageSize: number;
+	mostExpensiveSub: SingleSubscriptionDto | undefined;
 };

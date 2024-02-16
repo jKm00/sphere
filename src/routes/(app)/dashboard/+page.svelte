@@ -21,7 +21,12 @@
 	}
 </script>
 
-<KeyCardSection />
+<KeyCardSection
+	prefferedCurrency={data.user.prefferedCurrency}
+	totalSum={data.subscriptions.totalSum}
+	numberOfSubs={data.subscriptions.totalItems}
+	mostExpensiveSub={data.subscriptions.mostExpensiveSub}
+/>
 <TableSection
 	subscriptionForm={data.subscriptionForm}
 	deleteSubscriptionsForm={data.deleteSubscriptionsForm}

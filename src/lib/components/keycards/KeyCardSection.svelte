@@ -3,28 +3,35 @@
 	import KeyCard from './KeyCard.svelte';
 	import { onMount } from 'svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
+	import type { SingleSubscriptionDto } from '$lib/dtos/subscription';
+
+	export let prefferedCurrency: string;
+	export let prefferedPeriod: string = 'month';
+	export let totalSum: number;
+	export let numberOfSubs: number;
+	export let mostExpensiveSub: SingleSubscriptionDto | undefined;
 
 	let wrappers: HTMLDivElement[] = [];
 	let maxHeight: number;
 	let expanded = false;
 
-	const KEY_CARDS = [
+	$: keyCards = [
 		{
 			icon: Coins,
-			color: 'emerald-400',
-			value: '1190 NOK',
-			label: 'Total cost each month'
+			color: 'rgb(52 211 153)',
+			value: `${totalSum} ${prefferedCurrency}`,
+			label: `Total cost each ${prefferedPeriod}`
 		},
 		{
 			icon: Hash,
-			color: 'purple-400',
-			value: '1',
+			color: 'rgb(192 132 252)',
+			value: `${numberOfSubs}`,
 			label: 'Number of subscriptions'
 		},
 		{
 			icon: SignalHigh,
-			color: 'orange-400',
-			value: 'Disney+',
+			color: 'rgb(251 146 60)',
+			value: `${mostExpensiveSub?.company || 'No subscriptions'}`,
 			label: 'Most expensive subscription'
 		}
 	];
@@ -69,7 +76,7 @@
 
 <div class="mb-8">
 	<div class="flex flex-col gap-4 overflow-hidden md:flex-row" style="height: {maxHeight}px">
-		{#each KEY_CARDS as card, index}
+		{#each keyCards as card, index}
 			<div bind:this={wrappers[index]}>
 				<KeyCard {...card} />
 			</div>
