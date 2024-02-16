@@ -44,3 +44,12 @@ model Subscription {
 
   @@id([id, userId])
 }
+
+model FxRate {
+  id             Int      @id @default(autoincrement())
+  sourceCurrency String
+  targetCurrency String
+  exchangeRate   Float
+  validFrom      DateTime
+  validTo        DateTime
+}

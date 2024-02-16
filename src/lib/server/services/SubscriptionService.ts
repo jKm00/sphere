@@ -1,14 +1,27 @@
-import type { Subscription } from '@prisma/client';
+import type { FxRate, Subscription } from '@prisma/client';
 import type { SubscriptionRepository } from '../repositories/SubscriptionRepository';
 import SubscriptionRepositoryImpl from '../repositories/SubscriptionRepositoryImpl';
-import { generateId } from 'lucia';
 import { random } from 'oslo/crypto';
+import type { UserRepository } from '../repositories/UserRepository';
+import UserRepositoryImpl from '../repositories/UserRepositoryImpl';
+import dayjs from 'dayjs';
+import type { FxRatesRepository } from '../repositories/FxRatesRepository';
+import FxRatesRepositoryImpl from '../repositories/FxRatesRepositoryImpl';
+import type { SingleSubscriptionDto } from '$lib/dtos/subscription';
 
 export class SubscriptionService {
-	private repo: SubscriptionRepository;
+	private subscriptionRepo: SubscriptionRepository;
+	private userRepo: UserRepository;
+	private fxRatesRepo: FxRatesRepository;
 
-	constructor(repo: SubscriptionRepository) {
-		this.repo = repo;
+	constructor(
+		subscriptionRepo: SubscriptionRepository,
+		userRepo: UserRepository,
+		fxRatesRepo: FxRatesRepository
+	) {
+		this.subscriptionRepo = subscriptionRepo;
+		this.userRepo = userRepo;
+		this.fxRatesRepo = fxRatesRepo;
 	}
 
 	/**
@@ -31,7 +44,7 @@ export class SubscriptionService {
 			...subscription,
 			id: subId
 		};
-		return await this.repo.save(userId, subscriptionWithId);
+		return await this.subscriptionRepo.save(userId, subscriptionWithId);
 	}
 
 	/**
@@ -41,14 +54,54 @@ export class SubscriptionService {
 	 * @returns and object with a list of all subscriptions matching the predicates
 	 * and the total number of subscriptions for the user
 	 */
-	public async getAllSubscriptions(
-		userId: string,
-		predicate?: Record<string, string>,
-		currency?: string
-	) {
+	public async getAllSubscriptions(userId: string, predicate?: Record<string, string>) {
+		const user = await this.userRepo.findUserById(userId);
+
+		if (!user) throw new Error('User not found');
+
+		const subscriptions = await this.subscriptionRepo.findAll(userId, predicate);
+
+		let convertedSubs: SingleSubscriptionDto[] = [];
+		for (let i = 0; i < subscriptions.length; i++) {
+			convertedSubs.push(
+				await this.convertToPrefferedCurrency(subscriptions[i], user.prefferedCurrency)
+			);
+		}
+
 		return {
-			data: await this.repo.findAll(userId, predicate),
-			totalItems: await this.repo.getCount(userId)
+			data: convertedSubs,
+			totalItems: await this.subscriptionRepo.getCount(userId)
+		};
+	}
+
+	/**
+	 * Converts the amount of a subscription to the preffered currency of the user
+	 * @param sub the subscription to convert
+	 * @param prefferedCurrency the currency the user prefers
+	 * @returns a new subscription with the amount converted and the updated currency
+	 */
+	private async convertToPrefferedCurrency(sub: Subscription, prefferedCurrency: string) {
+		if (sub.currency === prefferedCurrency) return sub;
+
+		let fxRate: FxRate | null;
+		let index = 0;
+		do {
+			fxRate = await this.fxRatesRepo.getFxRate(
+				sub.currency,
+				prefferedCurrency,
+				dayjs().subtract(index, 'day')
+			);
+			index++;
+		} while (!fxRate && index < 5);
+
+		if (!fxRate) {
+			return sub;
+		}
+
+		return {
+			...sub,
+			currency: prefferedCurrency,
+			amount: sub.amount * fxRate.exchangeRate
 		};
 	}
 
@@ -58,8 +111,12 @@ export class SubscriptionService {
 	 * @param ids an array containing the ids of the subscriptions to delete
 	 */
 	public async deleteSubscriptions(userId: string, ids: string[]) {
-		return await this.repo.deleteAll(userId, ids);
+		return await this.subscriptionRepo.deleteAll(userId, ids);
 	}
 }
 
-export default new SubscriptionService(SubscriptionRepositoryImpl);
+export default new SubscriptionService(
+	SubscriptionRepositoryImpl,
+	UserRepositoryImpl,
+	FxRatesRepositoryImpl
+);

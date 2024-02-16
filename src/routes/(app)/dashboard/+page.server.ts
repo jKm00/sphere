@@ -4,7 +4,7 @@ import { message, superValidate } from 'sveltekit-superforms/server';
 import { deleteSubscriptionsSchema, subscriptionSchema } from '$lib/schemas/subscription';
 import SubscriptionService from '$lib/server/services/SubscriptionService';
 import { redirect } from 'sveltekit-flash-message/server';
-import type { SubscriptionsDto } from '$lib/dtos/subscription';
+import type { SingleSubscriptionDto, SubscriptionsDto } from '$lib/dtos/subscription';
 import { getRedirectUrl } from '$lib/server/utils';
 import UserService from '$lib/server/services/UserService';
 
@@ -34,7 +34,17 @@ export const load: PageServerLoad = async (event) => {
 		predicate['pageSize'] = pageSize;
 
 		// Get result
-		const result = await SubscriptionService.getAllSubscriptions(event.locals.user.id, predicate);
+		let result: { data: SingleSubscriptionDto[]; totalItems: number };
+		try {
+			result = await SubscriptionService.getAllSubscriptions(event.locals.user.id, predicate);
+		} catch (err) {
+			return {
+				data: [],
+				totalItems: 0,
+				page,
+				pageSize
+			} as SubscriptionsDto;
+		}
 
 		// Map to DTO
 		return {

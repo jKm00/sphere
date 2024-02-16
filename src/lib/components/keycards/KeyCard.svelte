@@ -15,8 +15,3 @@
 	</div>
 </div>
 
-<style>
-	.width {
-		width: min(100%, 300px);
-	}
-</style>

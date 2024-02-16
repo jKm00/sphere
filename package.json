@@ -51,6 +51,7 @@
 		"@prisma/client": "^5.9.1",
 		"bits-ui": "^0.16.0",
 		"clsx": "^2.1.0",
+		"dayjs": "^1.11.10",
 		"formsnap": "^0.4.3",
 		"lucia": "^3.0.1",
 		"lucide-svelte": "^0.321.0",
