@@ -6,10 +6,13 @@
 	import { page } from '$app/stores';
 	import { MoveDown, MoveUp } from 'lucide-svelte';
 	import TableAction from './TableAction.svelte';
+	import { onMount } from 'svelte';
+	import { browser } from '$app/environment';
 
 	type Header = {
 		key: string;
 		label: string;
+		showOnMobile: boolean;
 		width?: string;
 		sort?: 'asc' | 'desc' | null;
 		action?: (header: Header) => void;
@@ -18,15 +21,19 @@
 	export let checkedRows: string[] = [];
 	export let subscriptions: SubscriptionsDto;
 
+	let showMobileVersion = false;
+
 	let headers = [
 		{
 			key: 'id',
 			label: 'ID',
-			width: 'w-40'
+			showOnMobile: false,
+			width: 'w-24'
 		},
 		{
 			key: 'company',
 			label: 'Company',
+			showOnMobile: true,
 			sort: null,
 			action: (header: Header) => {
 				updateSort(header);
@@ -35,6 +42,7 @@
 		{
 			key: 'amount',
 			label: 'Amount',
+			showOnMobile: true,
 			sort: null,
 			action: (header: Header) => {
 				updateSort(header);
@@ -43,6 +51,7 @@
 		{
 			key: 'period',
 			label: 'Period',
+			showOnMobile: false,
 			sort: null,
 			action: (header: Header) => {
 				updateSort(header);
@@ -52,6 +61,7 @@
 			key: 'type',
 			label: 'Type',
 			sort: null,
+			showOnMobile: false,
 			action: (header: Header) => {
 				updateSort(header);
 			}
@@ -64,6 +74,10 @@
 		Number($page.url.searchParams.get('page')) === 0
 			? 1
 			: Number($page.url.searchParams.get('page'));
+
+	onMount(() => {
+		handleResize();
+	});
 
 	/**
 	 * Updates the sort state based on the header clicked
@@ -151,7 +165,15 @@
 			checkedRows = [];
 		}
 	}
+
+	function handleResize() {
+		if (browser) {
+			showMobileVersion = window.innerWidth < 768;
+		}
+	}
 </script>
+
+<svelte:window on:resize={handleResize} />
 
 <!-- Table -->
 <Table.Root>
@@ -161,28 +183,30 @@
 				<input type="checkbox" on:click={handleAllSelect} bind:checked={selectAll} />
 			</Table.Head>
 			{#each headers as header (header.key)}
-				<Table.Head class={header.width ? header.width : ''}>
-					{#if header.action}
-						<button
-							class="flex items-center gap-1"
-							on:click={() => {
-								if (header.action) {
-									header.action(header);
-								}
-							}}
-						>
+				{#if !showMobileVersion || header.showOnMobile}
+					<Table.Head class={header.width ? header.width : ''}>
+						{#if header.action}
+							<button
+								class="flex items-center gap-1"
+								on:click={() => {
+									if (header.action) {
+										header.action(header);
+									}
+								}}
+							>
+								{header.label}
+								{#if header.sort === 'desc'}
+									<MoveUp class="w-4" />
+								{/if}
+								{#if header.sort === 'asc'}
+									<MoveDown class="w-4" />
+								{/if}
+							</button>
+						{:else}
 							{header.label}
-							{#if header.sort === 'desc'}
-								<MoveUp class="w-4" />
-							{/if}
-							{#if header.sort === 'asc'}
-								<MoveDown class="w-4" />
-							{/if}
-						</button>
-					{:else}
-						{header.label}
-					{/if}
-				</Table.Head>
+						{/if}
+					</Table.Head>
+				{/if}
 			{/each}
 			<Table.Head class="w-10"></Table.Head>
 		</Table.Row>
@@ -196,15 +220,21 @@
 					<Table.Cell>
 						<input type="checkbox" value={subscription.id} bind:group={checkedRows} />
 					</Table.Cell>
-					<Table.Cell>{subscription.id}</Table.Cell>
+					{#if !showMobileVersion}
+						<Table.Cell>{subscription.id}</Table.Cell>
+					{/if}
 					<Table.Cell>{subscription.company}</Table.Cell>
 					<Table.Cell>{subscription.amount} {subscription.currency}</Table.Cell>
-					<Table.Cell
-						>{subscription.period[0].toUpperCase()}{subscription.period.substring(1)}</Table.Cell
-					>
-					<Table.Cell
-						>{subscription.type[0].toUpperCase()}{subscription.type.substring(1)}</Table.Cell
-					>
+					{#if !showMobileVersion}
+						<Table.Cell
+							>{subscription.period[0].toUpperCase()}{subscription.period.substring(1)}</Table.Cell
+						>
+					{/if}
+					{#if !showMobileVersion}
+						<Table.Cell
+							>{subscription.type[0].toUpperCase()}{subscription.type.substring(1)}</Table.Cell
+						>
+					{/if}
 					<Table.Cell><TableAction {subscription} on:view on:edit on:delete /></Table.Cell>
 				</Table.Row>
 			{/each}
@@ -214,7 +244,7 @@
 
 <!-- Table controlls -->
 <div class="flex items-center justify-between">
-	<p>{checkedRows.length} of {subscriptions.data.length} row(s) selected</p>
+	<p class="text-sm">{checkedRows.length} of {subscriptions.data.length} row(s) selected</p>
 	<Pagination.Root
 		count={subscriptions.totalItems}
 		perPage={subscriptions.pageSize}
