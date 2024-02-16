@@ -54,13 +54,14 @@ export class SubscriptionService {
 	 * @returns and object with a list of all subscriptions matching the predicates
 	 * and the total number of subscriptions for the user
 	 */
-	public async getAllSubscriptions(userId: string, predicate?: Record<string, string>) {
+	public async getSubscriptions(userId: string, predicate?: Record<string, string>) {
 		const user = await this.userRepo.findUserById(userId);
 
 		if (!user) throw new Error('User not found');
 
 		const subscriptions = await this.subscriptionRepo.findAll(userId, predicate);
 
+		// Convert currency of subs matching predicate
 		let convertedSubs: SingleSubscriptionDto[] = [];
 		for (let i = 0; i < subscriptions.length; i++) {
 			convertedSubs.push(
@@ -70,16 +71,20 @@ export class SubscriptionService {
 
 		const allSubscriptions = await this.subscriptionRepo.findAll(userId);
 
+		// Convert currency of all subs
 		let allSubsConverted: SingleSubscriptionDto[] = [];
-		let mostExpensiveSub: SingleSubscriptionDto | undefined;
 		for (let i = 0; i < allSubscriptions.length; i++) {
-			if (!mostExpensiveSub || allSubscriptions[i].amount > mostExpensiveSub.amount) {
-				mostExpensiveSub = allSubscriptions[i];
-			}
-
 			allSubsConverted.push(
 				await this.convertToPrefferedCurrency(allSubscriptions[i], user.prefferedCurrency)
 			);
+		}
+
+		// Find most expensive subscription
+		let mostExpensiveSub: SingleSubscriptionDto | undefined;
+		for (let i = 0; i < allSubsConverted.length; i++) {
+			if (!mostExpensiveSub || allSubsConverted[i].amount > mostExpensiveSub.amount) {
+				mostExpensiveSub = allSubsConverted[i];
+			}
 		}
 
 		return {

@@ -41,7 +41,7 @@ export const load: PageServerLoad = async (event) => {
 			mostExpensiveSub: SingleSubscriptionDto | undefined;
 		};
 		try {
-			result = await SubscriptionService.getAllSubscriptions(event.locals.user.id, predicate);
+			result = await SubscriptionService.getSubscriptions(event.locals.user.id, predicate);
 		} catch (err) {
 			return {
 				data: [],
