@@ -10,6 +10,7 @@ const port = 3000;
 let scheduledTask: cron.ScheduledTask;
 
 app.listen(port, async () => {
+	// TODO: Schedule once a day
 	scheduledTask = cron.schedule('*/5 * * * * *', async () => {
 		try {
 			const res = await fetch(
