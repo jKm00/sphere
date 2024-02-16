@@ -7,6 +7,7 @@
 	import Separator from './ui/separator/separator.svelte';
 	import { version } from '$lib/version';
 	import CurrencyDropdown from './CurrencyDropdown.svelte';
+	import PeriodDropdown from './PeriodDropdown.svelte';
 
 	export let user: UserDto;
 </script>
@@ -27,6 +28,7 @@
 			<Separator class="my-2" />
 			<ThemeDropdown />
 			<CurrencyDropdown currency={user.prefferedCurrency} />
+			<PeriodDropdown period={user.prefferedPeriod} />
 			<Button
 				variant="ghost"
 				class="flex items-center justify-between rounded-none font-normal"

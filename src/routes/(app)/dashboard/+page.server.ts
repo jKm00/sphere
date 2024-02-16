@@ -208,5 +208,39 @@ export const actions = {
 			},
 			event
 		);
+	},
+	updatePeriod: async (event) => {
+		if (!event.locals.user) {
+			redirect(302, '/login?redirect=/dashboard');
+		}
+
+		const form = await event.request.formData();
+		const period = form.get('period');
+
+		const redirectTo = getRedirectUrl(event.url.searchParams.get('redirectTo'), '/dashboard');
+
+		try {
+			UserService.updatePeriod(event.locals.user.id, `${period}`);
+		} catch (error) {
+			redirect(
+				302,
+				redirectTo,
+				{
+					type: 'error',
+					message: 'Failed to update preffered period. Please try again!'
+				},
+				event
+			);
+		}
+
+		redirect(
+			302,
+			redirectTo,
+			{
+				type: 'success',
+				message: 'Preffered period updated!'
+			},
+			event
+		);
 	}
 };

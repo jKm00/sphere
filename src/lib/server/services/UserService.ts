@@ -1,4 +1,5 @@
 import { currencies } from '$lib/currency';
+import { periods } from '$lib/period';
 import type { UserRepository } from '../repositories/UserRepository';
 import UserRepositoryImpl from '../repositories/UserRepositoryImpl';
 
@@ -18,6 +19,11 @@ export class UserService {
 		return await this.repo.findUserById(id);
 	}
 
+	/**
+	 * Updates the preffered currency of a user
+	 * @param id of the user
+	 * @param currency to update to
+	 */
 	public async updateCurrency(id: string, currency: string | null) {
 		const user = await this.repo.findUserById(id);
 
@@ -30,6 +36,26 @@ export class UserService {
 		await this.repo.save({
 			...user,
 			prefferedCurrency
+		});
+	}
+
+	/**
+	 * Updates the preffered period of a user
+	 * @param id of the user
+	 * @param period tp update to
+	 */
+	public async updatePeriod(id: string, period: string | null) {
+		const user = await this.repo.findUserById(id);
+
+		if (!user) {
+			throw new Error('User not found');
+		}
+
+		let prefferedPeriod = periods.find((p) => p.value === period)?.value ?? 'month';
+
+		await this.repo.save({
+			...user,
+			prefferedPeriod
 		});
 	}
 }

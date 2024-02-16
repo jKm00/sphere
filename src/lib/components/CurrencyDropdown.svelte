@@ -33,9 +33,7 @@
 							label={currency.label}
 							on:click={() => handleClick(currency)}
 						>
-							<!-- <button type="submit" class="bg-red-400"> -->
 							{currency.label}
-							<!-- </button> -->
 						</Select.Item>
 					{/each}
 				</form>

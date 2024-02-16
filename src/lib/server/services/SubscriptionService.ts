@@ -8,6 +8,7 @@ import dayjs from 'dayjs';
 import type { FxRatesRepository } from '../repositories/FxRatesRepository';
 import FxRatesRepositoryImpl from '../repositories/FxRatesRepositoryImpl';
 import type { SingleSubscriptionDto } from '$lib/dtos/subscription';
+import { periodConversions } from '../utils';
 
 export class SubscriptionService {
 	private subscriptionRepo: SubscriptionRepository;
@@ -64,9 +65,15 @@ export class SubscriptionService {
 		// Convert currency of subs matching predicate
 		let convertedSubs: SingleSubscriptionDto[] = [];
 		for (let i = 0; i < subscriptions.length; i++) {
-			convertedSubs.push(
-				await this.convertToPrefferedCurrency(subscriptions[i], user.prefferedCurrency)
+			const currencyConverted = await this.convertToPrefferedCurrency(
+				subscriptions[i],
+				user.prefferedCurrency
 			);
+			const periodConverted = await this.convertToPrefferedPeriod(
+				currencyConverted,
+				user.prefferedPeriod
+			);
+			convertedSubs.push(periodConverted);
 		}
 
 		const allSubscriptions = await this.subscriptionRepo.findAll(userId);
@@ -74,9 +81,15 @@ export class SubscriptionService {
 		// Convert currency of all subs
 		let allSubsConverted: SingleSubscriptionDto[] = [];
 		for (let i = 0; i < allSubscriptions.length; i++) {
-			allSubsConverted.push(
-				await this.convertToPrefferedCurrency(allSubscriptions[i], user.prefferedCurrency)
+			const currencyConverted = await this.convertToPrefferedCurrency(
+				subscriptions[i],
+				user.prefferedCurrency
 			);
+			const periodConverted = await this.convertToPrefferedPeriod(
+				currencyConverted,
+				user.prefferedPeriod
+			);
+			allSubsConverted.push(periodConverted);
 		}
 
 		// Find most expensive subscription
@@ -122,7 +135,34 @@ export class SubscriptionService {
 		return {
 			...sub,
 			currency: prefferedCurrency,
-			amount: sub.amount * fxRate.exchangeRate
+			amount: Math.round(sub.amount * fxRate.exchangeRate * 100) / 100
+		};
+	}
+
+	/**
+	 * Converts the amount based on the preffered period of the user.
+	 * E.g. if subscriptions is given as x amount per month and user
+	 * wants to see per year, the amount is multiplied by 12.
+	 * Note: The period field of the subscription is also updated.
+	 * @param sub the subscription to convert
+	 * @param prefferedPeriod the period the user prefers
+	 * @returns a new subscription with the amount converted and the updated period
+	 */
+	private async convertToPrefferedPeriod(sub: Subscription, prefferedPeriod: string) {
+		if (sub.period === prefferedPeriod) return sub;
+
+		const convertDetails = periodConversions.find(
+			(p) => p.source === sub.period && p.target === prefferedPeriod
+		);
+
+		if (!convertDetails) {
+			return sub;
+		}
+
+		return {
+			...sub,
+			period: prefferedPeriod,
+			amount: Math.round(sub.amount * convertDetails.conversion * 100) / 100
 		};
 	}
 

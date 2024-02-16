@@ -23,6 +23,7 @@
 
 <KeyCardSection
 	prefferedCurrency={data.user.prefferedCurrency}
+	prefferedPeriod={data.user.prefferedPeriod}
 	totalSum={data.subscriptions.totalSum}
 	numberOfSubs={data.subscriptions.totalItems}
 	mostExpensiveSub={data.subscriptions.mostExpensiveSub}

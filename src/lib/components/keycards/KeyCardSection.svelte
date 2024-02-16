@@ -6,7 +6,7 @@
 	import type { SingleSubscriptionDto } from '$lib/dtos/subscription';
 
 	export let prefferedCurrency: string;
-	export let prefferedPeriod: string = 'month';
+	export let prefferedPeriod: string;
 	export let totalSum: number;
 	export let numberOfSubs: number;
 	export let mostExpensiveSub: SingleSubscriptionDto | undefined;
