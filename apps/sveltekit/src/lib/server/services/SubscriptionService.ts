@@ -76,6 +76,15 @@ export class SubscriptionService {
 			convertedSubs.push(periodConverted);
 		}
 
+		// Sort subscriptions on amount after converting to correct currency
+		// and period
+		if (predicate?.sortBy === 'amount' && predicate?.order === 'desc') {
+			convertedSubs = convertedSubs.sort((a, b) => b.amount - a.amount);
+		}
+		if (predicate?.sortBy === 'amount' && predicate?.order === 'asc') {
+			convertedSubs = convertedSubs.sort((a, b) => a.amount - b.amount);
+		}
+
 		const allSubscriptions = await this.subscriptionRepo.findAll(userId);
 
 		// Convert currency of all subs
@@ -129,6 +138,11 @@ export class SubscriptionService {
 		} while (!fxRate && index < 5);
 
 		if (!fxRate) {
+			console.error(
+				'Could not find fx rate for currency conversion',
+				sub.currency,
+				prefferedCurrency
+			);
 			return sub;
 		}
 
