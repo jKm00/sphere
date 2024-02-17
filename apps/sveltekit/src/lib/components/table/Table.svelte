@@ -213,7 +213,7 @@
 	</Table.Header>
 	<Table.Body>
 		{#if subscriptions.data.length === 0}
-			<td colspan={100} class="py-10 text-center text-muted-foreground">No items...</td>
+			<td colspan={100} class="text-muted-foreground py-10 text-center">No items...</td>
 		{:else}
 			{#each subscriptions.data as subscription, i (i)}
 				<Table.Row>
@@ -224,7 +224,9 @@
 						<Table.Cell>{subscription.id}</Table.Cell>
 					{/if}
 					<Table.Cell>{subscription.company}</Table.Cell>
-					<Table.Cell>{subscription.amount} {subscription.currency}</Table.Cell>
+					<Table.Cell
+						>{Math.round(subscription.amount * 100) / 100} {subscription.currency}</Table.Cell
+					>
 					{#if !showMobileVersion}
 						<Table.Cell
 							>{subscription.period[0].toUpperCase()}{subscription.period.substring(1)}</Table.Cell

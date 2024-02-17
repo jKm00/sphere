@@ -19,7 +19,7 @@
 		{
 			icon: Coins,
 			color: 'rgb(52 211 153)',
-			value: `${totalSum} ${prefferedCurrency}`,
+			value: `${Math.round(totalSum * 100) / 100} ${prefferedCurrency}`,
 			label: `Total cost each ${prefferedPeriod}`
 		},
 		{
@@ -84,7 +84,7 @@
 	</div>
 	<Button
 		on:click={expand}
-		class="mt-2 flex w-full gap-2 text-sm font-normal text-muted-foreground md:hidden"
+		class="text-muted-foreground mt-2 flex w-full gap-2 text-sm font-normal md:hidden"
 		variant="ghost"
 	>
 		{#if expanded}

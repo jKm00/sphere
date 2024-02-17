@@ -149,7 +149,7 @@ export class SubscriptionService {
 		return {
 			...sub,
 			currency: prefferedCurrency,
-			amount: Math.round(sub.amount * fxRate.exchangeRate * 100) / 100
+			amount: sub.amount * fxRate.exchangeRate
 		};
 	}
 
@@ -176,7 +176,7 @@ export class SubscriptionService {
 		return {
 			...sub,
 			period: prefferedPeriod,
-			amount: Math.round(sub.amount * convertDetails.conversion * 100) / 100
+			amount: sub.amount * convertDetails.conversion
 		};
 	}
 
