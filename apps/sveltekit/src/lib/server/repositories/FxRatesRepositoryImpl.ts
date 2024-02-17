@@ -10,11 +10,10 @@ class FxRatesRepositoryImpl implements FxRatesRepository {
 		this.db = db;
 	}
 
-	public async save(fxRate: Omit<FxRate, 'id'>) {
-		await this.db.fxRate.create({
-			data: {
-				...fxRate
-			}
+	public async saveAll(fxRates: Omit<FxRate, 'id'>[]) {
+		await this.db.fxRate.createMany({
+			data: fxRates,
+			skipDuplicates: true
 		});
 	}
 

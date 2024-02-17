@@ -3,10 +3,10 @@ import type { Dayjs } from 'dayjs';
 
 export interface FxRatesRepository {
 	/**
-	 * Saves a new fx rate to the database
+	 * Saves a list of new fx rate to the database
 	 * @param fxRate to save
 	 */
-	save(fxRate: Omit<FxRate, 'id'>): Promise<void>;
+	saveAll(fxRates: Omit<FxRate, 'id'>[]): Promise<void>;
 
 	/**
 	 * Returns the exchange rate between two currencies at a given date
