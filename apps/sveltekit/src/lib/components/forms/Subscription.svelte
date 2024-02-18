@@ -28,6 +28,8 @@
 	$: selectedType = types.find((t) => t.value === editingSubscription?.type);
 	$: url = editingSubscription?.url ?? '';
 
+	$: console.log(selectedCurrency);
+
 	const { errors, enhance, delayed, message } = superForm(subscriptionForm, {
 		onResult: handleFormResult
 	});
@@ -88,7 +90,7 @@
 					class={$errors.company ? 'border-destructive' : ''}
 				/>
 				{#if $errors.company}
-					<p class="text-xs text-destructive">{$errors.company}</p>
+					<p class="text-destructive text-xs">{$errors.company}</p>
 				{/if}
 			</div>
 			<div>
@@ -117,7 +119,7 @@
 						class={$errors.amount ? 'border-destructive' : ''}
 					/>
 					{#if $errors.amount}
-						<p class="text-xs text-destructive">{$errors.amount}</p>
+						<p class="text-destructive text-xs">{$errors.amount}</p>
 					{/if}
 				</div>
 				<div>
@@ -138,7 +140,7 @@
 					</Select.Root>
 					<input type="hidden" name="currency" value={selectedCurrency?.value ?? ''} />
 					{#if $errors.currency}
-						<p class="text-xs text-destructive">{$errors.currency}</p>
+						<p class="text-destructive text-xs">{$errors.currency}</p>
 					{/if}
 				</div>
 				<div>
@@ -159,7 +161,7 @@
 					</Select.Root>
 					<input type="hidden" name="period" value={selectedPeriod?.value ?? ''} />
 					{#if $errors.period}
-						<p class="text-xs text-destructive">{$errors.period}</p>
+						<p class="text-destructive text-xs">{$errors.period}</p>
 					{/if}
 				</div>
 			</div>
@@ -181,7 +183,7 @@
 				</Select.Root>
 				<input type="hidden" name="type" value={selectedType?.value ?? ''} />
 				{#if $errors.type}
-					<p class="text-xs text-destructive">{$errors.type}</p>
+					<p class="text-destructive text-xs">{$errors.type}</p>
 				{/if}
 			</div>
 			<div>

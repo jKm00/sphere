@@ -24,9 +24,9 @@
 <KeyCardSection
 	prefferedCurrency={data.user.prefferedCurrency}
 	prefferedPeriod={data.user.prefferedPeriod}
-	totalSum={data.subscriptions.totalSum}
+	totalSum={data.derived.totalSum}
 	numberOfSubs={data.subscriptions.totalItems}
-	mostExpensiveSub={data.subscriptions.mostExpensiveSub}
+	mostExpensiveSub={data.derived.mostExpensiveSub}
 />
 <TableSection
 	subscriptionForm={data.subscriptionForm}

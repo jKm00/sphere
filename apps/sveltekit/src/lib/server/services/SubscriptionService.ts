@@ -60,38 +60,28 @@ export class SubscriptionService {
 
 		if (!user) throw new Error('User not found');
 
-		const subscriptions = await this.subscriptionRepo.findAll(userId, predicate);
+		return {
+			data: await this.subscriptionRepo.findAll(userId, predicate),
+			totalItems: await this.subscriptionRepo.getCount(userId)
+		};
+	}
 
-		// Convert currency of subs matching predicate
-		let convertedSubs: SingleSubscriptionDto[] = [];
-		for (let i = 0; i < subscriptions.length; i++) {
-			const currencyConverted = await this.convertToPrefferedCurrency(
-				subscriptions[i],
-				user.prefferedCurrency
-			);
-			const periodConverted = await this.convertToPrefferedPeriod(
-				currencyConverted,
-				user.prefferedPeriod
-			);
-			convertedSubs.push(periodConverted);
-		}
+	/**
+	 * Returns the total sum of all subscriptions and the most expensive subscription
+	 * for a given user
+	 * @param userId of the user
+	 */
+	public async getDerivedData(userId: string) {
+		const user = await this.userRepo.findUserById(userId);
 
-		// Sort subscriptions on amount after converting to correct currency
-		// and period
-		if (predicate?.sortBy === 'amount' && predicate?.order === 'desc') {
-			convertedSubs = convertedSubs.sort((a, b) => b.amount - a.amount);
-		}
-		if (predicate?.sortBy === 'amount' && predicate?.order === 'asc') {
-			convertedSubs = convertedSubs.sort((a, b) => a.amount - b.amount);
-		}
+		if (!user) throw new Error('User not found');
 
 		const allSubscriptions = await this.subscriptionRepo.findAll(userId);
 
-		// Convert currency of all subs
 		let allSubsConverted: SingleSubscriptionDto[] = [];
 		for (let i = 0; i < allSubscriptions.length; i++) {
 			const currencyConverted = await this.convertToPrefferedCurrency(
-				subscriptions[i],
+				allSubscriptions[i],
 				user.prefferedCurrency
 			);
 			const periodConverted = await this.convertToPrefferedPeriod(
@@ -110,8 +100,6 @@ export class SubscriptionService {
 		}
 
 		return {
-			data: convertedSubs,
-			totalItems: allSubscriptions.length,
 			totalSum: allSubsConverted.map((sub) => sub.amount).reduce((a, b) => a + b, 0),
 			mostExpensiveSub
 		};

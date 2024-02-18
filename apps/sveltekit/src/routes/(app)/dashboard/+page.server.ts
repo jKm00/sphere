@@ -4,7 +4,7 @@ import { message, superValidate } from 'sveltekit-superforms/server';
 import { deleteSubscriptionsSchema, subscriptionSchema } from '$lib/schemas/subscription';
 import SubscriptionService from '$lib/server/services/SubscriptionService';
 import { redirect } from 'sveltekit-flash-message/server';
-import type { SingleSubscriptionDto, SubscriptionsDto } from '$lib/dtos/subscription';
+import type { DerivedDto, SingleSubscriptionDto, SubscriptionsDto } from '$lib/dtos/subscription';
 import { getRedirectUrl } from '$lib/server/utils';
 import UserService from '$lib/server/services/UserService';
 
@@ -34,14 +34,12 @@ export const load: PageServerLoad = async (event) => {
 		predicate['pageSize'] = pageSize;
 
 		// Get result
-		let result: {
+		let subs: {
 			data: SingleSubscriptionDto[];
 			totalItems: number;
-			totalSum: number;
-			mostExpensiveSub: SingleSubscriptionDto | undefined;
 		};
 		try {
-			result = await SubscriptionService.getSubscriptions(event.locals.user.id, predicate);
+			subs = await SubscriptionService.getSubscriptions(event.locals.user.id, predicate);
 		} catch (err) {
 			return {
 				data: [],
@@ -55,7 +53,7 @@ export const load: PageServerLoad = async (event) => {
 
 		// Map to DTO
 		return {
-			data: result.data.map((item) => ({
+			data: subs.data.map((item) => ({
 				id: item.id,
 				company: item.company,
 				description: item.description,
@@ -65,24 +63,41 @@ export const load: PageServerLoad = async (event) => {
 				type: item.type,
 				url: item.url
 			})),
-			totalSum: result.totalSum,
-			totalItems: result.totalItems,
+			totalItems: subs.totalItems,
 			page,
-			pageSize,
-			mostExpensiveSub: result.mostExpensiveSub
+			pageSize
 		} as SubscriptionsDto;
 	}
 
-	const [subscriptionForm, deleteSubscriptionsForm, subscriptions] = await Promise.all([
+	async function fetchDerivedData() {
+		let derived: {
+			totalSum: number;
+			mostExpensiveSub: SingleSubscriptionDto | undefined;
+		};
+		try {
+			derived = await SubscriptionService.getDerivedData(event.locals.user.id);
+		} catch (err) {
+			return {
+				totalSum: 0,
+				mostExpensiveSub: undefined
+			};
+		}
+
+		return derived as DerivedDto;
+	}
+
+	const [subscriptionForm, deleteSubscriptionsForm, subscriptions, derived] = await Promise.all([
 		superValidate(subscriptionSchema),
 		superValidate(deleteSubscriptionsSchema),
-		fetchSubscriptions()
+		fetchSubscriptions(),
+		fetchDerivedData()
 	]);
 
 	return {
 		subscriptionForm,
 		deleteSubscriptionsForm,
-		subscriptions
+		subscriptions,
+		derived
 	};
 };
 
