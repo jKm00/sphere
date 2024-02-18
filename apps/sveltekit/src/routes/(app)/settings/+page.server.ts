@@ -11,6 +11,7 @@ export const actions: Actions = {
 		try {
 			await UserService.delete(event.locals.user.id);
 		} catch (err) {
+			console.error(err);
 			redirect(
 				302,
 				'/settings',

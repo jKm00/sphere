@@ -20,4 +20,10 @@ export interface UserRepository {
 	 * @param user to save
 	 */
 	save(user: Omit<User, 'createdAt'>): Promise<User>;
+
+	/**
+	 * Deletes a user
+	 * @param id of user to delete
+	 */
+	delete(id: string): Promise<void>;
 }

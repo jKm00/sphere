@@ -58,6 +58,14 @@ export class UserService {
 			prefferedPeriod
 		});
 	}
+
+	/**
+	 * Deletes a user by the given id
+	 * @param id of user
+	 */
+	public async delete(id: string) {
+		await this.repo.delete(id);
+	}
 }
 
 export default new UserService(UserRepositoryImpl);

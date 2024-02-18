@@ -8,11 +8,19 @@
 	import { version } from '$lib/version';
 	import CurrencyDropdown from './CurrencyDropdown.svelte';
 	import PeriodDropdown from './PeriodDropdown.svelte';
+	import { goto } from '$app/navigation';
 
 	export let user: UserDto;
+
+	let open = false;
+
+	function handleNavigate(path: string) {
+		open = false;
+		goto(path);
+	}
 </script>
 
-<Popover.Root portal={null}>
+<Popover.Root portal={null} bind:open>
 	<Popover.Trigger asChild let:builder>
 		<Button builders={[builder]} variant="ghost" class="rounded-full p-0">
 			<div
@@ -30,7 +38,7 @@
 			<CurrencyDropdown currency={user.prefferedCurrency} />
 			<PeriodDropdown period={user.prefferedPeriod} />
 			<Button
-				href="/settings"
+				on:click={() => handleNavigate('/settings')}
 				variant="ghost"
 				class="flex items-center justify-between rounded-none font-normal"
 			>
@@ -39,7 +47,7 @@
 			</Button>
 			<Button
 				data-sveltekit-preload-data="off"
-				href="/logout"
+				on:click={() => handleNavigate('/logout')}
 				variant="ghost"
 				class="flex items-center justify-between rounded-none font-normal"
 			>

@@ -48,6 +48,7 @@ export class SubscriptionService {
 		return await this.subscriptionRepo.save(userId, subscriptionWithId);
 	}
 
+	// TODO: Test
 	/**
 	 * Returns all subscriptions for a given user matching the given predicates
 	 * @param userId id of the user
@@ -66,6 +67,7 @@ export class SubscriptionService {
 		};
 	}
 
+	// TODO: Test
 	/**
 	 * Returns the total sum of all subscriptions and the most expensive subscription
 	 * for a given user

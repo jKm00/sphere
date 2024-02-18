@@ -38,6 +38,14 @@ class UserRepositoryImpl implements UserRepository {
 			}
 		});
 	}
+
+	public async delete(id: string) {
+		await this.db.user.delete({
+			where: {
+				id
+			}
+		});
+	}
 }
 
 export default new UserRepositoryImpl(db);
