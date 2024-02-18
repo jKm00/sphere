@@ -23,19 +23,18 @@
 		</Button>
 	</Popover.Trigger>
 	<Popover.Content class="w-80 p-0 pt-4">
-		<div class="grid gap-2 text-sm text-muted-foreground">
+		<div class="text-muted-foreground grid gap-2 text-sm">
 			<h2 class="px-4">{user.email}</h2>
 			<Separator class="my-2" />
 			<ThemeDropdown />
 			<CurrencyDropdown currency={user.prefferedCurrency} />
 			<PeriodDropdown period={user.prefferedPeriod} />
 			<Button
+				href="/settings"
 				variant="ghost"
 				class="flex items-center justify-between rounded-none font-normal"
-				disabled
 			>
 				<p>Settings</p>
-				<p class="text-xs">Not implemented</p>
 				<Settings class="w-4" />
 			</Button>
 			<Button

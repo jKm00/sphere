@@ -1,8 +1,8 @@
 <script lang="ts">
 	import UserMenu from '$lib/components/UserMenu.svelte';
-	import type { PageData } from './$types';
+	import type { LayoutData } from './$types';
 
-	export let data: PageData;
+	export let data: LayoutData;
 
 	$: ({ user } = data);
 </script>
@@ -11,12 +11,12 @@
 	<h1 class="text-xl font-bold uppercase"><a href="/dashboard">Sphere</a></h1>
 	<UserMenu {user} />
 </header>
-<main class="width m-auto p-4">
+<main class="width m-auto flex flex-grow flex-col p-4">
 	<slot />
 </main>
 
 <style>
 	.width {
-		max-width: 1200px;
+		width: min(100%, 1200px);
 	}
 </style>

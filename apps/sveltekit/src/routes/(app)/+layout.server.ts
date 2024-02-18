@@ -1,7 +1,7 @@
 import { currencies } from '$lib/currency';
 import type { UserDto } from '$lib/dtos/user';
 import UserService from '$lib/server/services/UserService';
-import type { PageServerLoad } from './$types';
+import type { PageServerLoad } from './dashboard/$types';
 
 // For some reason, ts complains about the event type not being defined.
 // This happens only for server files in this route.

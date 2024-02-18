@@ -7,4 +7,6 @@
 <ModeWatcher />
 <Toaster position="top-center" closeButton richColors />
 
-<slot />
+<div class="flex min-h-screen flex-col">
+	<slot />
+</div>
