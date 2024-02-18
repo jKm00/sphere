@@ -15,7 +15,7 @@
 
 	let mode: 'add' | 'edit';
 	let editingSubscription: SingleSubscriptionDto | null = null;
-	$: openEditingDrawer = editingSubscription !== null;
+	let openDrawer = false;
 
 	let checkedRows: string[] = [];
 	let openDeleteDialog = false;
@@ -23,6 +23,7 @@
 	function handleEdit(e: CustomEvent<SingleSubscriptionDto>) {
 		mode = 'edit';
 		editingSubscription = e.detail;
+		openDrawer = true;
 	}
 
 	function handleDelete(e: CustomEvent<string>) {
@@ -40,12 +41,7 @@
 				bind:items={checkedRows}
 				form={deleteSubscriptionsForm}
 			/>
-			<Subscription
-				bind:open={openEditingDrawer}
-				bind:editingSubscription
-				bind:mode
-				{subscriptionForm}
-			/>
+			<Subscription bind:open={openDrawer} bind:editingSubscription bind:mode {subscriptionForm} />
 		</div>
 	</header>
 	<Table

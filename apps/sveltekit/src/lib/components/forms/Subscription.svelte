@@ -13,6 +13,7 @@
 	import type { SingleSubscriptionDto } from '$lib/dtos/subscription';
 	import { currencies } from '$lib/currency';
 	import { periods } from '$lib/period';
+	import type { Selected } from 'bits-ui';
 
 	export let subscriptionForm: SuperValidated<SubscriptionSchema>;
 	export let mode: 'add' | 'edit' = 'add';
@@ -23,12 +24,22 @@
 	$: company = editingSubscription?.company ?? '';
 	$: description = editingSubscription?.description ?? '';
 	$: amount = editingSubscription?.amount ?? '';
-	$: selectedCurrency = currencies.find((c) => c.value === editingSubscription?.currency);
-	$: selectedPeriod = periods.find((p) => p.value === editingSubscription?.period);
-	$: selectedType = types.find((t) => t.value === editingSubscription?.type);
 	$: url = editingSubscription?.url ?? '';
 
-	$: console.log(selectedCurrency);
+	let selectedCurrency: Selected<string> | undefined;
+	let selectedPeriod: Selected<string> | undefined;
+	let selectedType: Selected<string> | undefined;
+
+	$: if (open && editingSubscription) {
+		const foundCurrency = currencies.find((c) => c.value === editingSubscription!.currency);
+		selectedCurrency = { value: foundCurrency?.value ?? '', label: foundCurrency?.label ?? '' };
+
+		const foundPeriod = periods.find((p) => p.value === editingSubscription!.period);
+		selectedPeriod = { value: foundPeriod?.value ?? '', label: foundPeriod?.label ?? '' };
+
+		const foundType = types.find((t) => t.value === editingSubscription!.type);
+		selectedType = { value: foundType?.value ?? '', label: foundType?.label ?? '' };
+	}
 
 	const { errors, enhance, delayed, message } = superForm(subscriptionForm, {
 		onResult: handleFormResult
@@ -124,7 +135,7 @@
 				</div>
 				<div>
 					<label for="currency" class="text-xs">Currency</label>
-					<Select.Root bind:selected={selectedCurrency}>
+					<Select.Root selected={selectedCurrency} onSelectedChange={(e) => (selectedCurrency = e)}>
 						<Select.Trigger class={$errors.currency ? 'border-destructive' : ''}>
 							<Select.Value placeholder="Currency" />
 						</Select.Trigger>
@@ -145,7 +156,7 @@
 				</div>
 				<div>
 					<label for="period" class="text-xs">Period</label>
-					<Select.Root bind:selected={selectedPeriod}>
+					<Select.Root selected={selectedPeriod} onSelectedChange={(e) => (selectedPeriod = e)}>
 						<Select.Trigger class={$errors.period ? 'border-destructive' : ''}>
 							<Select.Value placeholder="Period" />
 						</Select.Trigger>
@@ -167,7 +178,7 @@
 			</div>
 			<div>
 				<label for="type" class="text-xs">Type</label>
-				<Select.Root bind:selected={selectedType}>
+				<Select.Root selected={selectedType} onSelectedChange={(e) => (selectedType = e)}>
 					<Select.Trigger class={$errors.type ? 'border-destructive' : ''}>
 						<Select.Value placeholder="Type" />
 					</Select.Trigger>
