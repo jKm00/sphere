@@ -52,7 +52,7 @@ export const actions = {
 			302,
 			redirectUrl,
 			{
-				type: 'success',
+				type: 'info',
 				message: 'Welcome back!'
 			},
 			event

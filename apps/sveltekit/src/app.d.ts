@@ -8,7 +8,7 @@ declare global {
 			session: import('lucia').Session | null;
 		}
 		interface PageData {
-			flash?: { type: 'success' | 'error'; message: string };
+			flash?: { type: 'success' | 'error' | 'info'; message: string };
 		}
 		// interface PageState {}
 		// interface Platform {}

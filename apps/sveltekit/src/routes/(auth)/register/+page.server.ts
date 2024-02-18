@@ -69,7 +69,7 @@ export const actions: Actions = {
 			302,
 			'/dashboard',
 			{
-				type: 'success',
+				type: 'info',
 				message: 'Welcome to your dashboard!'
 			},
 			event

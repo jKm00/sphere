@@ -218,7 +218,7 @@ export const actions = {
 			302,
 			redirectTo,
 			{
-				type: 'success',
+				type: 'info',
 				message: 'Preffered currency updated!'
 			},
 			event
@@ -252,7 +252,7 @@ export const actions = {
 			302,
 			redirectTo,
 			{
-				type: 'success',
+				type: 'info',
 				message: 'Preffered period updated!'
 			},
 			event

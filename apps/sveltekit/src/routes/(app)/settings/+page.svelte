@@ -3,6 +3,7 @@
 	import Input from '$lib/components/ui/input/input.svelte';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import type { PageData } from './$types';
+	import { enhance } from '$app/forms';
 
 	export let data: PageData;
 
@@ -63,10 +64,13 @@
 					</AlertDialog.Header>
 					<AlertDialog.Footer>
 						<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
-						<AlertDialog.Action
-							class="border-destructive bg-background text-destructive hover:bg-destructive hover:text-destructive-foreground focus:bg-destructive focus:text-destructive-foreground border"
-							>Delete anyways</AlertDialog.Action
-						>
+						<form method="POST" action="?/deleteAccount" use:enhance>
+							<AlertDialog.Action
+								type="submit"
+								class="border-destructive bg-background text-destructive hover:bg-destructive hover:text-destructive-foreground focus:bg-destructive focus:text-destructive-foreground w-full border"
+								>Delete anyways</AlertDialog.Action
+							>
+						</form>
 					</AlertDialog.Footer>
 				</AlertDialog.Content>
 			</AlertDialog.Root>
