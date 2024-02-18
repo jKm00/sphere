@@ -4,11 +4,9 @@
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import type { PageData } from './$types';
 	import { enhance } from '$app/forms';
+	import ChangeEmail from '$lib/components/forms/ChangeEmail.svelte';
 
 	export let data: PageData;
-
-	let emailChanged = false;
-	let email = data.user.email;
 
 	let currentPassword = '';
 	let newPassword = '';
@@ -22,17 +20,7 @@
 
 	<section class="mb-10 grid gap-4">
 		<h2 class="border-muted border-b text-lg font-bold">Credentials</h2>
-		<div class="flex flex-col">
-			<h3 class="font-semibold">Email</h3>
-			<p class="text-muted-foreground mb-4 text-xs">Change your email address</p>
-			<Input
-				type="email"
-				class="mb-4"
-				bind:value={email}
-				on:keydown={() => (emailChanged = true)}
-			/>
-			<Button variant="additive" disabled={!emailChanged} class="self-end px-8">Save</Button>
-		</div>
+		<ChangeEmail form={data.emailForm} email={data.user.email} />
 		<div class="flex flex-col">
 			<h3 class="font-semibold">Password</h3>
 			<p class="text-muted-foreground mb-4 text-xs">Change your password</p>

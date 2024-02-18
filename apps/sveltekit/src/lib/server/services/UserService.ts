@@ -66,6 +66,24 @@ export class UserService {
 	public async delete(id: string) {
 		await this.repo.delete(id);
 	}
+
+	/**
+	 * Updates the email of a user
+	 * @param id of the user
+	 * @param email to change to
+	 */
+	public async updateEmail(id: string, email: string) {
+		const user = await this.repo.findUserById(id);
+
+		if (!user) {
+			throw new Error('User not found');
+		}
+
+		await this.repo.save({
+			...user,
+			email
+		});
+	}
 }
 
 export default new UserService(UserRepositoryImpl);
