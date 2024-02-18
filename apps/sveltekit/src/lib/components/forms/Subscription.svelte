@@ -50,6 +50,7 @@
 		{ value: 'music', label: 'Music' },
 		{ value: 'gaming', label: 'Gaming' },
 		{ value: 'hosting', label: 'Hosting' },
+		{ value: 'storage', label: 'Storage' },
 		{ value: 'other', label: 'Other' }
 	];
 
@@ -86,7 +87,7 @@
 				.toString()
 				.replace('&', ',')}"
 			use:enhance
-			class="mt-4 grid flex-grow content-start gap-4 overflow-y-auto"
+			class="mt-4 grid flex-grow content-start gap-4 overflow-y-auto px-1"
 		>
 			<input type="hidden" name="id" value={editingSubscription?.id} />
 			<div>
