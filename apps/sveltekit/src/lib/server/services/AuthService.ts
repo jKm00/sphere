@@ -45,6 +45,8 @@ export class AuthService {
 		return await this.repo.save({
 			id: userId,
 			email,
+			prefferedCurrency: 'USD',
+			prefferedPeriod: 'month',
 			hashed_password: hashedPassword,
 			salt
 		});
@@ -81,6 +83,46 @@ export class AuthService {
 		}
 
 		return await this.createSession(user);
+	}
+
+	// TODO: test
+	/**
+	 * Change the password of a user
+	 * @param userId of the user to change the password for
+	 * @param sessionId of the session to update
+	 * @param currentPassword current password of the user
+	 * @param newPassword the password to update to
+	 * @returns a session cookie
+	 */
+	public async changePassword(
+		userId: string,
+		sessionId: string,
+		currentPassword: string,
+		newPassword: string
+	) {
+		const user = await this.repo.findUserById(userId);
+		if (!user) {
+			throw new Error('User not found');
+		}
+
+		const { hashed_password, salt } = user;
+		const validPassword = await this.hasher.verify(
+			hashed_password,
+			currentPassword + salt + PEPPER
+		);
+
+		if (!validPassword) {
+			throw new Error('Invalid credentials');
+		}
+
+		const hashedPassword = await this.hasher.hash(newPassword + salt + PEPPER);
+
+		await this.repo.save({
+			...user,
+			hashed_password: hashedPassword
+		});
+
+		return this.refreshSession(sessionId);
 	}
 
 	/**

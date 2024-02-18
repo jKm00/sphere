@@ -1,18 +1,12 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button';
-	import Input from '$lib/components/ui/input/input.svelte';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import type { PageData } from './$types';
 	import { enhance } from '$app/forms';
 	import ChangeEmail from '$lib/components/forms/ChangeEmail.svelte';
+	import ChangePassword from '$lib/components/forms/ChangePassword.svelte';
 
 	export let data: PageData;
-
-	let currentPassword = '';
-	let newPassword = '';
-	let confirmPassword = '';
-	$: disablePassword =
-		!currentPassword || !newPassword || !confirmPassword || newPassword !== confirmPassword;
 </script>
 
 <div class="width self-start">
@@ -21,17 +15,7 @@
 	<section class="mb-10 grid gap-4">
 		<h2 class="border-muted border-b text-lg font-bold">Credentials</h2>
 		<ChangeEmail form={data.emailForm} email={data.user.email} />
-		<div class="flex flex-col">
-			<h3 class="font-semibold">Password</h3>
-			<p class="text-muted-foreground mb-4 text-xs">Change your password</p>
-			<label for="current" class="text-xs">Current password</label>
-			<Input id="current" bind:value={currentPassword} type="password" class="mb-4" />
-			<label for="new" class="text-xs">New password</label>
-			<Input id="new" bind:value={newPassword} type="password" class="mb-4" />
-			<label for="confirm" class="text-xs">Confirm new password</label>
-			<Input id="confirm" bind:value={confirmPassword} type="password" class="mb-4" />
-			<Button variant="additive" disabled={disablePassword} class="self-end px-8">Save</Button>
-		</div>
+		<ChangePassword form={data.passwordForm} />
 	</section>
 
 	<section class="grid gap-4">
