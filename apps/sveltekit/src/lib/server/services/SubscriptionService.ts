@@ -36,10 +36,6 @@ export class SubscriptionService {
 		id: string | undefined,
 		subscription: Omit<Subscription, 'id' | 'createdAt' | 'userId'>
 	) {
-		// TODO: Check if this is a good way to generate ids.
-		// For now I think it is, because to identify a subscription
-		// you not only need the subscription id, you also need
-		// the user id
 		const subId = id ?? Math.floor(random() * 100000).toString();
 		const subscriptionWithId = {
 			...subscription,
