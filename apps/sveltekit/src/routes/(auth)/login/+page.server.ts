@@ -26,8 +26,10 @@ export const actions = {
 
 		const { email, password } = form.data;
 
+		let emailVerified = false;
 		try {
-			const sessionCookie = await AuthService.login(email, password);
+			const { user, sessionCookie } = await AuthService.login(email, password);
+			emailVerified = user.emailVerified;
 			event.cookies.set(sessionCookie.name, sessionCookie.value, {
 				path: '.',
 				...sessionCookie.attributes
@@ -46,7 +48,11 @@ export const actions = {
 			});
 		}
 
-		const redirectUrl = event.url.searchParams.get('redirect') || '/dashboard';
+		const redirectUrl = event.url.searchParams.get('redirectTo') || '/dashboard';
+
+		if (!emailVerified) {
+			return redirect(302, `/verify-email?redirectTo=${redirectUrl}`);
+		}
 
 		redirect(
 			302,

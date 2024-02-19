@@ -7,7 +7,15 @@ import { emailSchema } from '$lib/schemas/email';
 import { passwordSchema } from '$lib/schemas/password';
 import AuthService from '$lib/server/services/AuthService';
 
-export const load: PageServerLoad = async () => {
+export const load: PageServerLoad = async (event) => {
+	if (!event.locals.user) {
+		redirect(302, '/login?redirectTo=/settings');
+	}
+
+	if (!event.locals.user.emailVerified) {
+		redirect(302, '/verify-email?redirectTo=/settings');
+	}
+
 	return {
 		emailForm: await superValidate(emailSchema),
 		passwordForm: await superValidate(passwordSchema)
@@ -17,7 +25,7 @@ export const load: PageServerLoad = async () => {
 export const actions: Actions = {
 	updateEmail: async (event) => {
 		if (!event.locals.user) {
-			redirect(302, '/login?redirect=/settings');
+			redirect(302, '/login?redirectTo=/settings');
 		}
 
 		const form = await superValidate(event, emailSchema);
@@ -54,7 +62,7 @@ export const actions: Actions = {
 	},
 	changePassword: async (event) => {
 		if (!event.locals.user || !event.locals.session) {
-			redirect(302, '/login?redirect=/settings');
+			redirect(302, '/login?redirectTo=/settings');
 		}
 
 		const form = await superValidate(event, passwordSchema);
@@ -104,7 +112,7 @@ export const actions: Actions = {
 	},
 	deleteAccount: async (event) => {
 		if (!event.locals.user) {
-			redirect(302, '/login?redirect=/settings');
+			redirect(302, '/login?redirectTo=/settings');
 		}
 
 		try {

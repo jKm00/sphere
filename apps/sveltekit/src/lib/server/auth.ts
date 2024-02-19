@@ -11,11 +11,21 @@ export const auth = new Lucia(adapter, {
 		attributes: {
 			secure: !dev
 		}
+	},
+	getUserAttributes: (attributes) => {
+		return {
+			emailVerified: attributes.emailVerified,
+			email: attributes.email
+		};
 	}
 });
 
 declare module 'lucia' {
 	interface Register {
 		Lucia: typeof auth;
+		DatabaseUserAttributes: {
+			email: string;
+			emailVerified: boolean;
+		};
 	}
 }

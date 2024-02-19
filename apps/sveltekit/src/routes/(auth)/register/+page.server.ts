@@ -4,6 +4,7 @@ import type { Actions, PageServerLoad } from './$types';
 import { fail } from '@sveltejs/kit';
 import AuthService from '$lib/server/services/AuthService';
 import { redirect } from 'sveltekit-flash-message/server';
+import EmailService from '$lib/server/services/EmailService';
 
 export const load: PageServerLoad = async (event) => {
 	if (event.locals.user) {
@@ -27,10 +28,24 @@ export const actions: Actions = {
 
 		const { email, password } = form.data;
 
-		// Try to create user
 		try {
-			await AuthService.createUser(email, password);
+			// Try to create user
+			const user = await AuthService.createUser(email, password);
+			// Send verification email
+			const verificationCode = await AuthService.generateEmailVerificationCode(user.id, user.email);
+			await EmailService.sendEmail(
+				user.email,
+				'Verify your email',
+				`<p>Your verification code is: ${verificationCode}</p>`
+			);
+
+			const sessionCookie = await AuthService.createSession(user);
+			event.cookies.set(sessionCookie.name, sessionCookie.value, {
+				path: '.',
+				...sessionCookie.attributes
+			});
 		} catch (error) {
+			console.log(error);
 			// Error handling
 			if (error instanceof Error) {
 				const errorMessage = error.message;
@@ -43,36 +58,7 @@ export const actions: Actions = {
 			});
 		}
 
-		// Login user
-		try {
-			const sessionCookie = await AuthService.login(email, password);
-			event.cookies.set(sessionCookie.name, sessionCookie.value, {
-				path: '.',
-				...sessionCookie.attributes
-			});
-		} catch (error) {
-			// If login fails, redirect to login page
-			// so they can try again
-			redirect(
-				302,
-				'/login?register=success',
-				{
-					type: 'success',
-					message: 'User created successfully!'
-				},
-				event
-			);
-		}
-
-		// On login success, redirect to dashboard
-		redirect(
-			302,
-			'/dashboard',
-			{
-				type: 'info',
-				message: 'Welcome to your dashboard!'
-			},
-			event
-		);
+		// Redirect to verification page
+		redirect(302, '/verify-email');
 	}
 };

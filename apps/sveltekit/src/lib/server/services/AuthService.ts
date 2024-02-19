@@ -6,15 +6,25 @@ import { Argon2id } from 'oslo/password';
 import { Lucia, generateId } from 'lucia';
 import type { User } from '@prisma/client';
 import { auth } from '../auth';
+import type { EmailVerificationRepository } from '../repositories/EmailVerificationRepository';
+import EmailVerificationRepositoryImpl from '../repositories/EmailVerificationRepositoryImpl';
+import { TimeSpan, createDate } from 'oslo';
 
 export class AuthService {
 	private auth;
-	private repo;
+	private userRepo;
+	private emailVerificationRepo;
 	private hasher;
 
-	constructor(auth: Lucia, repo: UserRepository, hasher: Argon2id) {
+	constructor(
+		auth: Lucia,
+		userRepo: UserRepository,
+		emailVerificationRepo: EmailVerificationRepository,
+		hasher: Argon2id
+	) {
 		this.auth = auth;
-		this.repo = repo;
+		this.userRepo = userRepo;
+		this.emailVerificationRepo = emailVerificationRepo;
 		this.hasher = hasher;
 	}
 
@@ -24,7 +34,7 @@ export class AuthService {
 	 * @returns true if email is taken, false otherwise
 	 */
 	public async findUser(email: string) {
-		return await this.repo.findUserByEmail(email);
+		return await this.userRepo.findUserByEmail(email);
 	}
 
 	/**
@@ -42,14 +52,32 @@ export class AuthService {
 		const userId = generateId(15);
 		const [hashedPassword, salt] = await this.generateHashedPassword(password);
 
-		return await this.repo.save({
+		return await this.userRepo.save({
 			id: userId,
 			email,
+			emailVerified: false,
 			prefferedCurrency: 'USD',
 			prefferedPeriod: 'month',
 			hashed_password: hashedPassword,
 			salt
 		});
+	}
+
+	// TODO: test
+	/**
+	 * Generates a verification code for the given email
+	 * @param userId of the user to generate the code for
+	 * @param email of the user to generate the code for
+	 * @returns the generated verification code
+	 */
+	public async generateEmailVerificationCode(userId: string, email: string) {
+		await this.emailVerificationRepo.deleteAll(userId);
+
+		const code = generateRandomString(8, alphabet('0-9'));
+		const expiresAt = createDate(new TimeSpan(5, 'm'));
+		await this.emailVerificationRepo.save(userId, email, code, expiresAt);
+
+		return code;
 	}
 
 	/**
@@ -82,7 +110,7 @@ export class AuthService {
 			throw new Error('Invalid credentials');
 		}
 
-		return await this.createSession(user);
+		return { user, sessionCookie: await this.createSession(user) };
 	}
 
 	// TODO: test
@@ -100,7 +128,7 @@ export class AuthService {
 		currentPassword: string,
 		newPassword: string
 	) {
-		const user = await this.repo.findUserById(userId);
+		const user = await this.userRepo.findUserById(userId);
 		if (!user) {
 			throw new Error('User not found');
 		}
@@ -117,7 +145,7 @@ export class AuthService {
 
 		const hashedPassword = await this.hasher.hash(newPassword + salt + PEPPER);
 
-		await this.repo.save({
+		await this.userRepo.save({
 			...user,
 			hashed_password: hashedPassword
 		});
@@ -130,7 +158,7 @@ export class AuthService {
 	 * @param user to create session for
 	 * @returns session cookie
 	 */
-	private async createSession(user: User) {
+	public async createSession(user: User) {
 		const session = await this.auth.createSession(user.id, {});
 		const sessionCookie = this.auth.createSessionCookie(session.id);
 		return sessionCookie;
@@ -182,4 +210,9 @@ export class AuthService {
 	}
 }
 
-export default new AuthService(auth, UserRepositoryImpl, new Argon2id());
+export default new AuthService(
+	auth,
+	UserRepositoryImpl,
+	EmailVerificationRepositoryImpl,
+	new Argon2id()
+);

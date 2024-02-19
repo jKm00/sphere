@@ -11,15 +11,17 @@ datasource db {
 }
 
 model User {
-  id                String         @id
-  createdAt         DateTime       @default(now())
-  email             String         @unique
-  prefferedCurrency String         @default("EUR")
-  prefferedPeriod   String         @default("month")
-  hashed_password   String
-  salt              String
-  sessions          Session[]
-  subscriptions     Subscription[]
+  id                     String                  @id
+  createdAt              DateTime                @default(now())
+  email                  String                  @unique
+  emailVerified          Boolean                 @default(false)
+  prefferedCurrency      String                  @default("EUR")
+  prefferedPeriod        String                  @default("month")
+  hashed_password        String
+  salt                   String
+  sessions               Session[]
+  emailVerificationCodes EmailVerificationCode[]
+  subscriptions          Subscription[]
 }
 
 model Session {
@@ -27,6 +29,15 @@ model Session {
   userId    String
   expiresAt DateTime
   user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
+}
+
+model EmailVerificationCode {
+  id        Int      @id @default(autoincrement())
+  code      String
+  userId    String
+  User      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
+  email     String
+  expiresAt DateTime
 }
 
 model Subscription {

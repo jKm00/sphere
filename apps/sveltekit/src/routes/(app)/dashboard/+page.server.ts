@@ -13,7 +13,11 @@ import UserService from '$lib/server/services/UserService';
 //@ts-ignore
 export const load: PageServerLoad = async (event) => {
 	if (!event.locals.user) {
-		redirect(302, '/login?redirect=/dashboard');
+		redirect(302, '/login?redirectTo=/dashboard');
+	}
+
+	if (!event.locals.user.emailVerified) {
+		redirect(302, '/verify-email?redirectTo=/dashboard');
 	}
 
 	async function fetchSubscriptions() {
@@ -104,7 +108,7 @@ export const load: PageServerLoad = async (event) => {
 export const actions = {
 	saveSubscription: async (event) => {
 		if (!event.locals.user) {
-			redirect(302, '/login?redirect=/dashboard');
+			redirect(302, '/login?redirectTo=/dashboard');
 		}
 
 		const form = await superValidate(event, subscriptionSchema);
@@ -150,7 +154,7 @@ export const actions = {
 	},
 	deleteSubscriptions: async (event) => {
 		if (!event.locals.user) {
-			redirect(302, '/login?redirect=/dashboard');
+			redirect(302, '/login?redirectTo=/dashboard');
 		}
 
 		const form = await superValidate(event, deleteSubscriptionsSchema);
@@ -192,7 +196,7 @@ export const actions = {
 	},
 	updateCurrency: async (event) => {
 		if (!event.locals.user) {
-			redirect(302, '/login?redirect=/dashboard');
+			redirect(302, '/login?redirectTo=/dashboard');
 		}
 
 		const form = await event.request.formData();
@@ -226,7 +230,7 @@ export const actions = {
 	},
 	updatePeriod: async (event) => {
 		if (!event.locals.user) {
-			redirect(302, '/login?redirect=/dashboard');
+			redirect(302, '/login?redirectTo=/dashboard');
 		}
 
 		const form = await event.request.formData();
