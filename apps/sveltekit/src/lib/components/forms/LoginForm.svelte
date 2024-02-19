@@ -11,10 +11,10 @@
 
 	const { errors, enhance, delayed, message } = superForm(data);
 
-	$: redirect = $page.url.searchParams.get('redirect') || '/';
+	$: redirect = $page.url.searchParams.get('redirectTo') || '/';
 </script>
 
-<form method="POST" action="?redirect={redirect}" use:enhance class="grid gap-2">
+<form method="POST" action="?redirectTo={redirect}" use:enhance class="grid gap-2">
 	<label for="email">
 		<span class="text-xs">Email</span>
 		<Input
@@ -26,7 +26,7 @@
 			class={$errors.email ? 'border-destructive' : ''}
 		/>
 		{#if $errors.email}
-			<p class="text-xs text-destructive">{$errors.email}</p>
+			<p class="text-destructive text-xs">{$errors.email}</p>
 		{/if}
 	</label>
 	<label for="password">
@@ -40,7 +40,7 @@
 			class={$errors.password ? 'border-destructive' : ''}
 		/>
 		{#if $errors.password}
-			<p class="text-xs text-destructive">{$errors.password}</p>
+			<p class="text-destructive text-xs">{$errors.password}</p>
 		{/if}
 	</label>
 	<Button type="submit">
