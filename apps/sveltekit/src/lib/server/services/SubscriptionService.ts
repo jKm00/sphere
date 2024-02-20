@@ -44,7 +44,6 @@ export class SubscriptionService {
 		return await this.subscriptionRepo.save(userId, subscriptionWithId);
 	}
 
-	// TODO: Test
 	/**
 	 * Returns all subscriptions for a given user matching the given predicates
 	 * @param userId id of the user
