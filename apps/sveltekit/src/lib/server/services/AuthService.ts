@@ -63,7 +63,6 @@ export class AuthService {
 		});
 	}
 
-	// TODO: test
 	/**
 	 * Generates a verification code for the given email
 	 * @param userId of the user to generate the code for
@@ -113,7 +112,6 @@ export class AuthService {
 		return { user, sessionCookie: await this.createSession(user) };
 	}
 
-	// TODO: test
 	/**
 	 * Change the password of a user
 	 * @param userId of the user to change the password for
@@ -143,11 +141,12 @@ export class AuthService {
 			throw new Error('Invalid credentials');
 		}
 
-		const hashedPassword = await this.hasher.hash(newPassword + salt + PEPPER);
+		const [newHashedPassword, newSalt] = await this.generateHashedPassword(newPassword);
 
 		await this.userRepo.save({
 			...user,
-			hashed_password: hashedPassword
+			hashed_password: newHashedPassword,
+			salt: newSalt
 		});
 
 		return this.refreshSession(sessionId);
