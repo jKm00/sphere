@@ -39,6 +39,17 @@ class UserRepositoryImpl implements UserRepository {
 		});
 	}
 
+	public async updateEmailVerified(userId: string, verified: boolean) {
+		await this.db.user.update({
+			data: {
+				emailVerified: verified
+			},
+			where: {
+				id: userId
+			}
+		});
+	}
+
 	public async delete(id: string) {
 		await this.db.user.delete({
 			where: {

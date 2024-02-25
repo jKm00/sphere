@@ -22,6 +22,13 @@ export interface UserRepository {
 	save(user: Omit<User, 'createdAt'>): Promise<User>;
 
 	/**
+	 * Updated the email verified status of the user
+	 * @param userId to update
+	 * @param verified status to set
+	 */
+	updateEmailVerified(userId: string, verified: boolean): Promise<void>;
+
+	/**
 	 * Deletes a user
 	 * @param id of user to delete
 	 */

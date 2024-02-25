@@ -4,6 +4,8 @@ import { loginSchema } from '$lib/schemas/login';
 import { fail } from '@sveltejs/kit';
 import AuthService from '$lib/server/services/AuthService';
 import { redirect } from 'sveltekit-flash-message/server';
+import EmailService from '$lib/server/services/EmailService';
+import type { User } from '@prisma/client';
 
 export const load: PageServerLoad = async (event) => {
 	if (event.locals.user) {
@@ -26,10 +28,11 @@ export const actions = {
 
 		const { email, password } = form.data;
 
-		let emailVerified = false;
+		let foundUser: User | null = null;
 		try {
 			const { user, sessionCookie } = await AuthService.login(email, password);
-			emailVerified = user.emailVerified;
+			foundUser = user;
+
 			event.cookies.set(sessionCookie.name, sessionCookie.value, {
 				path: '.',
 				...sessionCookie.attributes
@@ -50,7 +53,18 @@ export const actions = {
 
 		const redirectUrl = event.url.searchParams.get('redirectTo') || '/dashboard';
 
-		if (!emailVerified) {
+		if (!foundUser.emailVerified) {
+			// Send verification email
+			const verificationCode = await AuthService.generateEmailVerificationCode(
+				foundUser.id,
+				foundUser.email
+			);
+			await EmailService.sendEmail(
+				foundUser.email,
+				'Verify your email',
+				`<p>Your verification code is: ${verificationCode}</p>`
+			);
+
 			return redirect(302, `/verify-email?redirectTo=${redirectUrl}`);
 		}
 

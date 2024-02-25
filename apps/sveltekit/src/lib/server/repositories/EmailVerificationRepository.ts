@@ -2,6 +2,13 @@ import type { EmailVerificationCode } from '@prisma/client';
 
 export interface EmailVerificationRepository {
 	/**
+	 * Finds a verification code by user and code
+	 * @param userId id of the user
+	 * @param code to find
+	 */
+	findByUserAndCode(userId: string, code: string): Promise<EmailVerificationCode | null>;
+
+	/**
 	 * Saves a new email verification code
 	 * @param userId of the user that can use the code
 	 * @param email of the user that can use the code

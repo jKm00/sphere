@@ -9,6 +9,7 @@ import { auth } from '../auth';
 import type { EmailVerificationRepository } from '../repositories/EmailVerificationRepository';
 import EmailVerificationRepositoryImpl from '../repositories/EmailVerificationRepositoryImpl';
 import { TimeSpan, createDate } from 'oslo';
+import dayjs from 'dayjs';
 
 export class AuthService {
 	private auth;
@@ -77,6 +78,33 @@ export class AuthService {
 		await this.emailVerificationRepo.save(userId, email, code, expiresAt);
 
 		return code;
+	}
+
+	/**
+	 * Verifies the email verification code.
+	 * @param userId to verify
+	 * @param code the check
+	 * @returns a session cookie if the code is valie.
+	 * @throws Error if the code is invalid or expired
+	 */
+	public async verifyEmailVerificationCode(userId: string, code: string) {
+		const verificationCode = await this.emailVerificationRepo.findByUserAndCode(userId, code);
+
+		if (!verificationCode || verificationCode.code !== code) {
+			throw new Error('Invalid verification code');
+		}
+
+		if (dayjs(verificationCode.expiresAt).isBefore(dayjs())) {
+			throw new Error('Verification code expired');
+		}
+
+		await this.userRepo.updateEmailVerified(userId, true);
+
+		await this.auth.invalidateUserSessions(userId);
+		const session = await this.auth.createSession(userId, {});
+		const sessionCookie = this.auth.createSessionCookie(session.id);
+
+		return sessionCookie;
 	}
 
 	/**
