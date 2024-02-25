@@ -94,6 +94,7 @@ export class AuthService {
 		return code;
 	}
 
+	// TODO: Test
 	/**
 	 * Verifies the email verification code.
 	 * @param userId to verify
