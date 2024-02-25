@@ -71,6 +71,20 @@ export class AuthService {
 	 * @returns the generated verification code
 	 */
 	public async generateEmailVerificationCode(userId: string, email: string) {
+		const existingVerification = await this.emailVerificationRepo.findByUser(userId);
+
+		if (existingVerification) {
+			const diff = dayjs().diff(existingVerification.updatedAt, 'seconds');
+
+			const waitTime = 30;
+
+			if (diff < waitTime) {
+				throw new Error(
+					`Please wait ${waitTime - diff} seconds before requesting a new verification code`
+				);
+			}
+		}
+
 		await this.emailVerificationRepo.deleteAll(userId);
 
 		const code = generateRandomString(8, alphabet('0-9'));

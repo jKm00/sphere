@@ -59,11 +59,7 @@ export const actions = {
 				foundUser.id,
 				foundUser.email
 			);
-			await EmailService.sendEmail(
-				foundUser.email,
-				'Verify your email',
-				`<p>Your verification code is: ${verificationCode}</p>`
-			);
+			await EmailService.sendVerificationEmail(foundUser.email, verificationCode);
 
 			return redirect(302, `/verify-email?redirectTo=${redirectUrl}`);
 		}

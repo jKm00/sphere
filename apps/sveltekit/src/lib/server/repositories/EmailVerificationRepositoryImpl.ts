@@ -9,6 +9,14 @@ class EmailVerificationRepositoryImpl implements EmailVerificationRepository {
 		this.db = db;
 	}
 
+	public async findByUser(userId: string) {
+		return await this.db.emailVerificationCode.findFirst({
+			where: {
+				userId
+			}
+		});
+	}
+
 	public async findByUserAndCode(userId: string, code: string) {
 		return await this.db.emailVerificationCode.findFirst({
 			where: {

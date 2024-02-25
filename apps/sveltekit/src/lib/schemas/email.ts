@@ -9,11 +9,7 @@ export const emailSchema = z.object({
 export type EmailSchema = typeof emailSchema;
 
 export const verifyEmail = z.object({
-	code: z
-		.number({ required_error: 'Code is required' })
-		.int()
-		.gte(10000000, { message: 'Needs to be 8 digits' })
-		.lte(99999999, { message: 'Needs to be 8 digits' })
+	code: z.string().regex(/^\d{8}$/, { message: 'Must be a 8 digit code' })
 });
 
 export type VerifyEmail = typeof verifyEmail;

@@ -38,6 +38,7 @@ model EmailVerificationCode {
   User      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
   email     String
   expiresAt DateTime
+  updatedAt DateTime @default(now())
 }
 
 model Subscription {

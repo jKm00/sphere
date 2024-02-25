@@ -7,9 +7,18 @@ class EmailSerivce {
 		this.transporter = transporter;
 	}
 
-	async sendEmail(to: string, subject: string, html: string) {
+	public async sendVerificationEmail(to: string, code: string) {
+		const subject = 'Verify your email';
+		const html = `
+			<h1>Verify your email</h1>
+			<p>Use the following code to verify your email: <strong>${code}</strong></p>
+		`;
+
+		await this.sendEmail(to, subject, html);
+	}
+
+	private async sendEmail(to: string, subject: string, html: string) {
 		await this.transporter.sendMail({
-			from: 'sphere@service.com',
 			to,
 			subject,
 			html

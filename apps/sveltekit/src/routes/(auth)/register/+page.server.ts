@@ -33,11 +33,7 @@ export const actions: Actions = {
 			const user = await AuthService.createUser(email, password);
 			// Send verification email
 			const verificationCode = await AuthService.generateEmailVerificationCode(user.id, user.email);
-			await EmailService.sendEmail(
-				user.email,
-				'Verify your email',
-				`<p>Your verification code is: ${verificationCode}</p>`
-			);
+			await EmailService.sendVerificationEmail(user.email, verificationCode);
 
 			const sessionCookie = await AuthService.createSession(user);
 			event.cookies.set(sessionCookie.name, sessionCookie.value, {
