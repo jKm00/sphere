@@ -5,11 +5,16 @@ import { fail } from '@sveltejs/kit';
 import AuthService from '$lib/server/services/AuthService';
 import { redirect } from 'sveltekit-flash-message/server';
 import EmailService from '$lib/server/services/EmailService';
+import { getLimiter } from '$lib/server/rateLimiter';
+
+const limiter = getLimiter('register');
 
 export const load: PageServerLoad = async (event) => {
 	if (event.locals.user) {
 		redirect(302, '/dashboard');
 	}
+
+	await limiter.cookieLimiter?.preflight(event);
 
 	return {
 		form: await superValidate(signUpSchema)
@@ -26,6 +31,13 @@ export const actions: Actions = {
 			});
 		}
 
+		// Disallow form spam
+		if (await limiter.isLimited(event)) {
+			return message(form, 'Too many tries. Please wait before trying again!', {
+				status: 429
+			});
+		}
+
 		const { email, password } = form.data;
 
 		try {
@@ -35,7 +47,7 @@ export const actions: Actions = {
 			const verificationCode = await AuthService.generateEmailVerificationCode(user.id, user.email);
 			await EmailService.sendVerificationEmail(user.email, verificationCode);
 
-			const sessionCookie = await AuthService.createSession(user);
+			const sessionCookie = await AuthService.createSession(user.id);
 			event.cookies.set(sessionCookie.name, sessionCookie.value, {
 				path: '.',
 				...sessionCookie.attributes

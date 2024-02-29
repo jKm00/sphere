@@ -5,6 +5,9 @@ import { fail } from '@sveltejs/kit';
 import AuthService from '$lib/server/services/AuthService';
 import { redirect } from 'sveltekit-flash-message/server';
 import EmailService from '$lib/server/services/EmailService';
+import { getLimiter } from '$lib/server/rateLimiter';
+
+const limiter = getLimiter('resend-email-verification');
 
 export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user;
@@ -64,6 +67,15 @@ export const actions = {
 	resetVerificationCode: async (event) => {
 		if (!event.locals.session) {
 			redirect(302, '/login');
+		}
+
+		if (await limiter.isLimited(event)) {
+			return redirect(
+				302,
+				'/verify-email',
+				{ type: 'error', message: 'Too many requests. Please try again later.' },
+				event
+			);
 		}
 
 		const user = event.locals.user;

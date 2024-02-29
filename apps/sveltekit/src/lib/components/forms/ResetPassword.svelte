@@ -45,6 +45,11 @@
 			Reset password
 		{/if}
 	</Button>
+	{#if $message}
+		<p class="text-destructive mt-2 text-center text-xs">
+			{$message}
+		</p>
+	{/if}
 </form>
 
 <style>

@@ -43,7 +43,7 @@ export const actions = {
 			302,
 			'/login',
 			{
-				type: 'info',
+				type: 'success',
 				message: 'Password successfully reset!'
 			},
 			event
