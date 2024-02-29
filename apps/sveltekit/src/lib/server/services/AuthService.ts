@@ -4,7 +4,6 @@ import type { UserRepository } from '../repositories/UserRepository';
 import UserRepositoryImpl from '../repositories/UserRepositoryImpl';
 import { Argon2id } from 'oslo/password';
 import { Lucia, generateId } from 'lucia';
-import type { User } from '@prisma/client';
 import { auth } from '../auth';
 import type { EmailVerificationRepository } from '../repositories/EmailVerificationRepository';
 import EmailVerificationRepositoryImpl from '../repositories/EmailVerificationRepositoryImpl';

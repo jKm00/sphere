@@ -2,6 +2,7 @@ import { describe, it, expect, beforeAll, vi } from 'vitest';
 import { AuthService } from './AuthService';
 import { Argon2id } from 'oslo/password';
 import { PEPPER } from '$env/static/private';
+import { TimeSpan, createDate } from 'oslo';
 
 let authService: AuthService;
 let mockRepo: any;
@@ -17,7 +18,8 @@ beforeAll(async () => {
 	};
 	mockEmailVerificationRepo = {
 		save: vi.fn(),
-		deleteAll: vi.fn()
+		deleteAll: vi.fn(),
+		findByUser: vi.fn()
 	};
 	mockResetPasswordRepo = {
 		deleteTokens: vi.fn()
@@ -177,7 +179,47 @@ describe('Generate email verification code', () => {
 		const userId = '1';
 		const email = 'test@user.com';
 
+		mockEmailVerificationRepo.findByUser.mockResolvedValue(null);
+
 		const code = await authService.generateEmailVerificationCode(userId, email);
+
+		expect(mockEmailVerificationRepo.deleteAll).toHaveBeenCalledWith(userId);
+		expect(mockEmailVerificationRepo.save).toHaveBeenCalledWith(
+			userId,
+			email,
+			code,
+			expect.any(Date)
+		);
+		expect(code).toHaveLength(8);
+	});
+
+	it('should throw error if a code was generated within the last 30 seconds', async () => {
+		const userId = '1';
+		const email = 'test@user.com';
+		const updatedAt = new Date();
+
+		mockEmailVerificationRepo.findByUser.mockResolvedValue({ updatedAt });
+
+		try {
+			await authService.generateEmailVerificationCode(userId, email);
+			expect(true).toBe(false);
+		} catch (err) {
+			expect(true).toBe(true);
+		}
+	});
+
+	it('should generate code if the previous code was generated more than 30 seconds ago', async () => {
+		const userId = '1';
+		const email = 'test@user.com';
+		const updatedAt = createDate(new TimeSpan(-31, 's'));
+		mockEmailVerificationRepo.findByUser.mockResolvedValue({ updatedAt });
+
+		let code = '';
+		try {
+			code = await authService.generateEmailVerificationCode(userId, email);
+		} catch (err) {
+			expect(true).toBe(false);
+		}
 
 		expect(mockEmailVerificationRepo.deleteAll).toHaveBeenCalledWith(userId);
 		expect(mockEmailVerificationRepo.save).toHaveBeenCalledWith(
