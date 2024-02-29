@@ -6,6 +6,7 @@ import { PEPPER } from '$env/static/private';
 let authService: AuthService;
 let mockRepo: any;
 let mockEmailVerificationRepo: any;
+let mockResetPasswordRepo: any;
 let mockAuth: any;
 
 beforeAll(async () => {
@@ -18,6 +19,9 @@ beforeAll(async () => {
 		save: vi.fn(),
 		deleteAll: vi.fn()
 	};
+	mockResetPasswordRepo = {
+		deleteTokens: vi.fn()
+	};
 	mockAuth = {
 		createSession: vi.fn(),
 		createSessionCookie: vi.fn(),
@@ -26,7 +30,13 @@ beforeAll(async () => {
 		validateSession: vi.fn(),
 		invalidateSession: vi.fn()
 	};
-	authService = new AuthService(mockAuth, mockRepo, mockEmailVerificationRepo, new Argon2id());
+	authService = new AuthService(
+		mockAuth,
+		mockRepo,
+		mockEmailVerificationRepo,
+		mockResetPasswordRepo,
+		new Argon2id()
+	);
 });
 
 describe('Find user', () => {

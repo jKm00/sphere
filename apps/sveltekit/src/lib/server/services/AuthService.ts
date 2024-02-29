@@ -1,4 +1,4 @@
-import { PEPPER } from '$env/static/private';
+import { APP_URL, PEPPER } from '$env/static/private';
 import { alphabet, generateRandomString } from 'oslo/crypto';
 import type { UserRepository } from '../repositories/UserRepository';
 import UserRepositoryImpl from '../repositories/UserRepositoryImpl';
@@ -10,22 +10,27 @@ import type { EmailVerificationRepository } from '../repositories/EmailVerificat
 import EmailVerificationRepositoryImpl from '../repositories/EmailVerificationRepositoryImpl';
 import { TimeSpan, createDate } from 'oslo';
 import dayjs from 'dayjs';
+import type { ResetPasswordRepository } from '../repositories/ResetPasswordRepository';
+import ResetPasswordRepositoryImpl from '../repositories/ResetPasswordRepositoryImpl';
 
 export class AuthService {
 	private auth;
 	private userRepo;
 	private emailVerificationRepo;
+	private resetPasswordRepo;
 	private hasher;
 
 	constructor(
 		auth: Lucia,
 		userRepo: UserRepository,
 		emailVerificationRepo: EmailVerificationRepository,
+		resetPasswordRepo: ResetPasswordRepository,
 		hasher: Argon2id
 	) {
 		this.auth = auth;
 		this.userRepo = userRepo;
 		this.emailVerificationRepo = emailVerificationRepo;
+		this.resetPasswordRepo = resetPasswordRepo;
 		this.hasher = hasher;
 	}
 
@@ -208,14 +213,25 @@ export class AuthService {
 		}
 
 		const resetPasswordToken = await this.generatePasswordResetToken(user.id);
+		const resetPasswordLink = `${APP_URL}/reset-password/${resetPasswordToken}`;
+
+		return resetPasswordLink;
 	}
 
 	/**
 	 * Generates a reset password token for a specific user
 	 * @param userId id of the user to generate the token for
+	 * @return the generated token
 	 */
 	private async generatePasswordResetToken(userId: string) {
-		return '';
+		// Invalidate existing tokens
+		await this.resetPasswordRepo.deleteTokens(userId);
+
+		// Create new token
+		const tokenId = generateId(40);
+		await this.resetPasswordRepo.save(tokenId, userId, createDate(new TimeSpan(2, 'h')));
+
+		return tokenId;
 	}
 
 	/**
@@ -279,5 +295,6 @@ export default new AuthService(
 	auth,
 	UserRepositoryImpl,
 	EmailVerificationRepositoryImpl,
+	ResetPasswordRepositoryImpl,
 	new Argon2id()
 );

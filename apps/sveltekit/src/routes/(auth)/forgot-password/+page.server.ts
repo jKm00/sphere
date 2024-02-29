@@ -3,6 +3,8 @@ import { superValidate } from 'sveltekit-superforms/server';
 import type { PageServerLoad } from './$types';
 import { fail } from '@sveltejs/kit';
 import { redirect } from 'sveltekit-flash-message/server';
+import AuthService from '$lib/server/services/AuthService';
+import EmailService from '$lib/server/services/EmailService';
 
 export const load: PageServerLoad = async (event) => {
 	if (event.locals.user) {
@@ -15,6 +17,7 @@ export const load: PageServerLoad = async (event) => {
 };
 
 export const actions = {
+	// TODO: Implement rate limiting
 	default: async (event) => {
 		const form = await superValidate(event, emailSchema);
 
@@ -22,7 +25,14 @@ export const actions = {
 			return fail(400, { form });
 		}
 
-		// TODO: Send email
+		const { email } = form.data;
+
+		try {
+			const resetLink = await AuthService.getResetPasswordLink(email);
+			await EmailService.sendPasswordResetEmail(email, resetLink);
+		} catch (err) {
+			console.error(err);
+		}
 
 		return redirect(
 			302,
