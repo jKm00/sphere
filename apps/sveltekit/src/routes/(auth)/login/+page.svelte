@@ -12,7 +12,7 @@
 		<p class="mb-2 mt-4 text-center text-xs">
 			Don't have an account? <a href="/register" class="underline">Sign up here</a>
 		</p>
-		<a href="/forgot-password" class="block text-center text-xs underline">Forgot password</a>
+		<a href="/reset-password" class="block text-center text-xs underline">Forgot password</a>
 	</div>
 </div>
 
