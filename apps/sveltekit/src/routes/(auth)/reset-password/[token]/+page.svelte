@@ -3,8 +3,6 @@
 	import type { PageData } from './$types';
 
 	export let data: PageData;
-
-	console.log(data.form);
 </script>
 
 <div class="flex flex-grow items-center justify-center">

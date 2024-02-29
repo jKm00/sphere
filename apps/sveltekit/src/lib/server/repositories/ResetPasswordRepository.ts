@@ -1,4 +1,13 @@
+import type { ResetPasswordToken } from '@prisma/client';
+
 export interface ResetPasswordRepository {
+	/**
+	 * Returns a token by its id
+	 * @param tokenId to find
+	 * @returns the reset password token object if found, null otherwise
+	 */
+	findByToken(tokenId: string): Promise<ResetPasswordToken | null>;
+
 	/**
 	 * Saves a reset password token to the db
 	 * @param token to save

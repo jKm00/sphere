@@ -121,8 +121,7 @@ export class AuthService {
 		await this.userRepo.updateEmailVerified(userId, true);
 
 		await this.auth.invalidateUserSessions(userId);
-		const session = await this.auth.createSession(userId, {});
-		const sessionCookie = this.auth.createSessionCookie(session.id);
+		const sessionCookie = await this.createSession(userId);
 
 		return sessionCookie;
 	}
@@ -157,7 +156,7 @@ export class AuthService {
 			throw new Error('Invalid credentials');
 		}
 
-		return { user, sessionCookie: await this.createSession(user) };
+		return { user, sessionCookie: await this.createSession(user.id) };
 	}
 
 	/**
@@ -200,6 +199,7 @@ export class AuthService {
 		return this.refreshSession(sessionId);
 	}
 
+	// TODO: Test
 	/**
 	 * Creates a reset password link
 	 * @param email of the user to reset the password for
@@ -218,6 +218,7 @@ export class AuthService {
 		return resetPasswordLink;
 	}
 
+	// TODO: Test
 	/**
 	 * Generates a reset password token for a specific user
 	 * @param userId id of the user to generate the token for
@@ -235,12 +236,36 @@ export class AuthService {
 	}
 
 	/**
+	 * Resets the password of a user
+	 * @param token reset password token used to verify the user
+	 * @param newPassword password to update to
+	 * @throws Error if the token is invalid or expired
+	 */
+	public async resetPassword(token: string, newPassword: string) {
+		// Verify token
+		const foundToken = await this.resetPasswordRepo.findByToken(token);
+		if (!foundToken) {
+			throw new Error('Invalid token');
+		}
+		if (dayjs(foundToken.expiresAt).isBefore(dayjs())) {
+			throw new Error('Token expired');
+		}
+
+		// Delete the token
+		await this.resetPasswordRepo.deleteTokens(foundToken.userId);
+
+		await this.auth.invalidateSession(foundToken.userId);
+		const [hashedPassword, salt] = await this.generateHashedPassword(newPassword);
+		await this.userRepo.updatePassword(foundToken.userId, hashedPassword, salt);
+	}
+
+	/**
 	 * Returns a session cookie for a given user
-	 * @param user to create session for
+	 * @param userId to create session for
 	 * @returns session cookie
 	 */
-	public async createSession(user: User) {
-		const session = await this.auth.createSession(user.id, {});
+	public async createSession(userId: string) {
+		const session = await this.auth.createSession(userId, {});
 		const sessionCookie = this.auth.createSessionCookie(session.id);
 		return sessionCookie;
 	}

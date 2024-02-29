@@ -50,6 +50,18 @@ class UserRepositoryImpl implements UserRepository {
 		});
 	}
 
+	public async updatePassword(userId: string, password: string, salt: string) {
+		await this.db.user.update({
+			data: {
+				hashed_password: password,
+				salt
+			},
+			where: {
+				id: userId
+			}
+		});
+	}
+
 	public async delete(id: string) {
 		await this.db.user.delete({
 			where: {

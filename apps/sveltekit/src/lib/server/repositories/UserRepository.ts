@@ -29,6 +29,14 @@ export interface UserRepository {
 	updateEmailVerified(userId: string, verified: boolean): Promise<void>;
 
 	/**
+	 * Updates the password of a specific user
+	 * @param userId to update
+	 * @param password to set
+	 * @param salt to set
+	 */
+	updatePassword(userId: string, password: string, salt: string): Promise<void>;
+
+	/**
 	 * Deletes a user
 	 * @param id of user to delete
 	 */

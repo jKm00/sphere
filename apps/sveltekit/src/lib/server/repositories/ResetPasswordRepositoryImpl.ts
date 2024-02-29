@@ -9,6 +9,14 @@ class ResetPasswordRepositoryImpl implements ResetPasswordRepository {
 		this.db = db;
 	}
 
+	public async findByToken(tokenId: string) {
+		return await this.db.resetPasswordToken.findUnique({
+			where: {
+				id: tokenId
+			}
+		});
+	}
+
 	public async save(token: string, userId: string, expiresAt: Date) {
 		await this.db.resetPasswordToken.create({
 			data: {
