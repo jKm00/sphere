@@ -15,12 +15,14 @@ beforeAll(async () => {
 		findUserByEmail: vi.fn(),
 		findUserById: vi.fn(),
 		save: vi.fn(),
-		updatePassword: vi.fn()
+		updatePassword: vi.fn(),
+		updateEmailVerified: vi.fn()
 	};
 	mockEmailVerificationRepo = {
 		save: vi.fn(),
 		deleteAll: vi.fn(),
-		findByUser: vi.fn()
+		findByUser: vi.fn(),
+		findByUserAndCode: vi.fn()
 	};
 	mockResetPasswordRepo = {
 		deleteTokens: vi.fn(),
@@ -33,7 +35,8 @@ beforeAll(async () => {
 		createBlankSessionCookie: vi.fn(),
 		sessionCookieName: 'auth_session',
 		validateSession: vi.fn(),
-		invalidateSession: vi.fn()
+		invalidateSession: vi.fn(),
+		invalidateUserSessions: vi.fn()
 	};
 	authService = new AuthService(
 		mockAuth,
@@ -232,6 +235,61 @@ describe('Generate email verification code', () => {
 			expect.any(Date)
 		);
 		expect(code).toHaveLength(8);
+	});
+
+	it('should throw error if the code is invalid', async () => {
+		const userId = 'user_1';
+		const code = 'invalid_code';
+		mockEmailVerificationRepo.findByUserAndCode.mockResolvedValue({ code: 'valid_code' });
+
+		try {
+			await authService.verifyEmailVerificationCode(userId, code);
+			expect(true).toBe(false);
+		} catch (err) {
+			if (err instanceof Error) {
+				expect(err.message).toBe('Invalid verification code');
+			} else {
+				expect(true).toBe(false);
+			}
+		}
+	});
+
+	it('should throw error if the code is expired', async () => {
+		const userId = 'user_1';
+		const code = 'valid_code';
+		mockEmailVerificationRepo.findByUserAndCode.mockResolvedValue({
+			code,
+			expiresAt: createDate(new TimeSpan(-1, 's'))
+		});
+
+		try {
+			await authService.verifyEmailVerificationCode(userId, code);
+			expect(true).toBe(false);
+		} catch (err) {
+			if (err instanceof Error) {
+				expect(err.message).toBe('Verification code expired');
+			} else {
+				expect(true).toBe(false);
+			}
+		}
+	});
+
+	it('should verify user if the code is valid', async () => {
+		const userId = 'user_1';
+		const code = 'valid_code';
+		mockEmailVerificationRepo.findByUserAndCode.mockResolvedValue({
+			code,
+			expiresAt: createDate(new TimeSpan(1, 'h'))
+		});
+
+		const sessionCookie = await authService.verifyEmailVerificationCode(userId, code);
+
+		expect(mockRepo.updateEmailVerified).toHaveBeenCalledWith(userId, true);
+		expect(mockAuth.invalidateUserSessions).toHaveBeenCalledWith(userId);
+		expect(mockAuth.createSession).toHaveBeenCalledWith(userId, {});
+		expect(mockAuth.createSessionCookie).toHaveBeenCalled();
+
+		expect(sessionCookie).toBeTruthy();
 	});
 });
 
