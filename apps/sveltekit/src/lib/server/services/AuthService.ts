@@ -32,7 +32,7 @@ export class AuthService {
 	/**
 	 * Returns the user with the given email or null if the email is not in use
 	 * @param email to check
-	 * @returns true if email is taken, false otherwise
+	 * @returns user if email is taken, null otherwise
 	 */
 	public async findUser(email: string) {
 		return await this.userRepo.findUserByEmail(email);
@@ -193,6 +193,29 @@ export class AuthService {
 		});
 
 		return this.refreshSession(sessionId);
+	}
+
+	/**
+	 * Creates a reset password link
+	 * @param email of the user to reset the password for
+	 * @returns a reset password link
+	 * @throws Error if the email is not found
+	 */
+	public async getResetPasswordLink(email: string) {
+		const user = await this.findUser(email);
+		if (!user || !user.emailVerified) {
+			throw new Error('Email not found');
+		}
+
+		const resetPasswordToken = await this.generatePasswordResetToken(user.id);
+	}
+
+	/**
+	 * Generates a reset password token for a specific user
+	 * @param userId id of the user to generate the token for
+	 */
+	private async generatePasswordResetToken(userId: string) {
+		return '';
 	}
 
 	/**
