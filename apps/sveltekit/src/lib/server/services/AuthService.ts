@@ -198,7 +198,6 @@ export class AuthService {
 		return this.refreshSession(sessionId);
 	}
 
-	// TODO: Test
 	/**
 	 * Creates a reset password link
 	 * @param email of the user to reset the password for
@@ -217,7 +216,6 @@ export class AuthService {
 		return resetPasswordLink;
 	}
 
-	// TODO: Test
 	/**
 	 * Generates a reset password token for a specific user
 	 * @param userId id of the user to generate the token for

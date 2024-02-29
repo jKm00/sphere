@@ -14,7 +14,8 @@ beforeAll(async () => {
 	mockRepo = {
 		findUserByEmail: vi.fn(),
 		findUserById: vi.fn(),
-		save: vi.fn()
+		save: vi.fn(),
+		updatePassword: vi.fn()
 	};
 	mockEmailVerificationRepo = {
 		save: vi.fn(),
@@ -22,7 +23,9 @@ beforeAll(async () => {
 		findByUser: vi.fn()
 	};
 	mockResetPasswordRepo = {
-		deleteTokens: vi.fn()
+		deleteTokens: vi.fn(),
+		save: vi.fn(),
+		findByToken: vi.fn()
 	};
 	mockAuth = {
 		createSession: vi.fn(),
@@ -302,5 +305,97 @@ describe('Change password', () => {
 		} catch (err) {
 			expect(true).toBe(false);
 		}
+	});
+});
+
+describe('Reset password', () => {
+	it('should not generate link if user is not found', async () => {
+		const email = 'test@user.com';
+		mockRepo.findUserByEmail.mockResolvedValue(null);
+
+		try {
+			await authService.getResetPasswordLink(email);
+			expect(true).toBe(false);
+		} catch (err) {
+			expect(true).toBe(true);
+		}
+	});
+
+	it('should generate link if user is found', async () => {
+		const userId = 'user_1';
+		const email = 'test@user.com';
+		mockRepo.findUserByEmail.mockResolvedValue({ id: userId, emailVerified: true });
+
+		let resetPasswordLink = '';
+		try {
+			resetPasswordLink = await authService.getResetPasswordLink(email);
+		} catch (err) {
+			expect(true).toBe(false);
+		}
+
+		expect(mockResetPasswordRepo.deleteTokens).toHaveBeenCalledWith(userId);
+		expect(mockResetPasswordRepo.save).toHaveBeenCalledWith(
+			expect.any(String),
+			userId,
+			expect.any(Date)
+		);
+		expect(resetPasswordLink).toContain('/reset-password/');
+	});
+
+	it('should throw error if reset token is invalid', async () => {
+		const token = 'invalid_token';
+		const newPassword = 'new_password';
+		mockResetPasswordRepo.findByToken.mockResolvedValue(null);
+
+		try {
+			await authService.resetPassword(token, newPassword);
+			expect(true).toBe(false);
+		} catch (err) {
+			if (err instanceof Error) {
+				expect(err.message).toBe('Invalid token');
+			} else {
+				expect(true).toBe(false);
+			}
+		}
+	});
+
+	it('should throw error if token is expired', async () => {
+		const token = 'expired_token';
+		const newPassword = 'new_password';
+		mockResetPasswordRepo.findByToken.mockResolvedValue({
+			expiresAt: createDate(new TimeSpan(-1, 's'))
+		});
+
+		try {
+			await authService.resetPassword(token, newPassword);
+			expect(true).toBe(false);
+		} catch (err) {
+			if (err instanceof Error) {
+				expect(err.message).toBe('Token expired');
+			} else {
+				expect(true).toBe(false);
+			}
+		}
+	});
+
+	it('should reset password if token is valid', async () => {
+		const token = 'valid_token';
+		const newPassword = 'new_password';
+		const userId = 'user_1';
+		mockResetPasswordRepo.findByToken.mockResolvedValue({
+			id: token,
+			userId,
+			expiresAt: createDate(new TimeSpan(1, 'h'))
+		});
+
+		await authService.resetPassword(token, newPassword);
+
+		expect(mockResetPasswordRepo.deleteTokens).toHaveBeenCalledWith(userId);
+		expect(mockAuth.invalidateSession).to;
+		expect(mockRepo.updatePassword).toHaveBeenCalledWith(
+			userId,
+			expect.any(String),
+			expect.any(String)
+		);
 	});
 });
