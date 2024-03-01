@@ -1,8 +1,9 @@
 export type UserDto = {
 	id: string;
-	email: string;
 	prefferedCurrency: string;
 	prefferedPeriod: string;
+	email: string | null;
+	username?: string | null;
 };
 
 export type GitHubUser = {

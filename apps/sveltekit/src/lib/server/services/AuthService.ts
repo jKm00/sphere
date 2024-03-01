@@ -165,6 +165,7 @@ export class AuthService {
 		return { user, sessionCookie: await this.createSession(user.id) };
 	}
 
+	// TODO: Test
 	/**
 	 * Signs in with GitHub
 	 * @param code to sign in with

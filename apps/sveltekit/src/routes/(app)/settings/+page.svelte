@@ -12,11 +12,13 @@
 <div class="width self-start">
 	<h1 class="border-muted mb-8 border-b pb-2 text-2xl font-bold">Account settings</h1>
 
-	<section class="mb-10 grid gap-4">
-		<h2 class="border-muted border-b text-lg font-bold">Credentials</h2>
-		<ChangeEmail form={data.emailForm} email={data.user.email} />
-		<ChangePassword form={data.passwordForm} />
-	</section>
+	{#if data.user.email}
+		<section class="mb-10 grid gap-4">
+			<h2 class="border-muted border-b text-lg font-bold">Credentials</h2>
+			<ChangeEmail form={data.emailForm} email={data.user.email} />
+			<ChangePassword form={data.passwordForm} />
+		</section>
+	{/if}
 
 	<section class="grid gap-4">
 		<h2 class="text-destructive border-muted border-b text-lg font-bold">Danger zone</h2>

@@ -32,7 +32,7 @@
 	</Popover.Trigger>
 	<Popover.Content class="w-80 p-0 pt-4">
 		<div class="text-muted-foreground grid gap-2 text-sm">
-			<h2 class="px-4">{user.email}</h2>
+			<h2 class="px-4">{user.email ?? user.username}</h2>
 			<Separator class="my-2" />
 			<ThemeDropdown />
 			<CurrencyDropdown currency={user.prefferedCurrency} />

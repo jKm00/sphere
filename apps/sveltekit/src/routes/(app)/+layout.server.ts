@@ -1,4 +1,3 @@
-import { currencies } from '$lib/currency';
 import type { UserDto } from '$lib/dtos/user';
 import UserService from '$lib/server/services/UserService';
 import type { PageServerLoad } from './dashboard/$types';
@@ -15,9 +14,10 @@ export const load: PageServerLoad = async (event) => {
 			if (foundUser) {
 				user = {
 					id: foundUser.id,
-					email: foundUser.email,
 					prefferedCurrency: foundUser.prefferedCurrency,
-					prefferedPeriod: foundUser.prefferedPeriod
+					prefferedPeriod: foundUser.prefferedPeriod,
+					email: foundUser.email,
+					username: foundUser.username
 				};
 			}
 		}

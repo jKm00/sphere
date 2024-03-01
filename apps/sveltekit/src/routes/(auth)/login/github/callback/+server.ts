@@ -18,7 +18,12 @@ export async function GET(event: RequestEvent) {
 			...sessionCookie.attributes
 		});
 	} catch (err) {
-		console.error(err);
+		redirect(
+			302,
+			'/',
+			{ type: 'error', message: 'Failed to sign in with GitHub. Please try again.' },
+			event
+		);
 	}
 
 	redirect(302, '/dashboard', { type: 'info', message: 'Welcome back!' }, event);
