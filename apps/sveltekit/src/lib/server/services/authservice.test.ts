@@ -9,6 +9,7 @@ let mockRepo: any;
 let mockEmailVerificationRepo: any;
 let mockResetPasswordRepo: any;
 let mockAuth: any;
+let mockGitHub: any;
 
 beforeAll(async () => {
 	mockRepo = {
@@ -38,12 +39,16 @@ beforeAll(async () => {
 		invalidateSession: vi.fn(),
 		invalidateUserSessions: vi.fn()
 	};
+	mockGitHub = {
+		validateAuthorizationCode: vi.fn()
+	};
 	authService = new AuthService(
 		mockAuth,
 		mockRepo,
 		mockEmailVerificationRepo,
 		mockResetPasswordRepo,
-		new Argon2id()
+		new Argon2id(),
+		mockGitHub
 	);
 });
 

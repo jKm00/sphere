@@ -25,7 +25,25 @@ class UserRepositoryImpl implements UserRepository {
 		});
 	}
 
-	public async save(user: Omit<User, 'createdAt'>) {
+	public async findUserByGitHubId(id: number) {
+		return await this.db.user.findUnique({
+			where: {
+				githubId: id
+			}
+		});
+	}
+
+	public async save(user: {
+		id: string;
+		emailVerified: boolean;
+		prefferedCurrency: string;
+		prefferedPeriod: string;
+		email?: string | null;
+		hashed_password?: string | null;
+		salt?: string | null;
+		githubId?: number | null;
+		username?: string | null;
+	}) {
 		return await this.db.user.upsert({
 			create: {
 				...user

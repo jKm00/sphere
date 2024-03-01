@@ -15,16 +15,12 @@
 			<p class="text-sm">Keep track of all your subscriptions</p>
 		</div>
 		<div class="flex items-center justify-center gap-4">
-			<span class="h-[1px] flex-grow rounded bg-primary"></span>
+			<span class="bg-primary h-[1px] flex-grow rounded"></span>
 			<h2>Login</h2>
-			<span class="h-[1px] flex-grow bg-primary"></span>
+			<span class="bg-primary h-[1px] flex-grow"></span>
 		</div>
 		<div class="grid gap-2">
-			<Button
-				class="flex justify-between px-3 opacity-50"
-				variant="outline"
-				title="GitHub sign in: Not implemented"
-			>
+			<Button href="/login/github" class="flex justify-between px-3" variant="outline">
 				<img src="/icons/github.png" alt="GitHub icon" class="h-8" />
 				GitHub
 				<img src="/icons/github.png" alt="GitHub icon" class="h-8 opacity-0" />

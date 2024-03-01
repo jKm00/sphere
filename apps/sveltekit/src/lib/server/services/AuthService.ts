@@ -3,14 +3,15 @@ import { alphabet, generateRandomString } from 'oslo/crypto';
 import type { UserRepository } from '../repositories/UserRepository';
 import UserRepositoryImpl from '../repositories/UserRepositoryImpl';
 import { Argon2id } from 'oslo/password';
-import { Lucia, generateId } from 'lucia';
-import { auth } from '../auth';
+import { Cookie, Lucia, generateId } from 'lucia';
+import { auth, github } from '../auth';
 import type { EmailVerificationRepository } from '../repositories/EmailVerificationRepository';
 import EmailVerificationRepositoryImpl from '../repositories/EmailVerificationRepositoryImpl';
 import { TimeSpan, createDate } from 'oslo';
 import dayjs from 'dayjs';
 import type { ResetPasswordRepository } from '../repositories/ResetPasswordRepository';
 import ResetPasswordRepositoryImpl from '../repositories/ResetPasswordRepositoryImpl';
+import { GitHub } from 'arctic';
 
 export class AuthService {
 	private auth;
@@ -18,19 +19,22 @@ export class AuthService {
 	private emailVerificationRepo;
 	private resetPasswordRepo;
 	private hasher;
+	private github;
 
 	constructor(
 		auth: Lucia,
 		userRepo: UserRepository,
 		emailVerificationRepo: EmailVerificationRepository,
 		resetPasswordRepo: ResetPasswordRepository,
-		hasher: Argon2id
+		hasher: Argon2id,
+		github: GitHub
 	) {
 		this.auth = auth;
 		this.userRepo = userRepo;
 		this.emailVerificationRepo = emailVerificationRepo;
 		this.resetPasswordRepo = resetPasswordRepo;
 		this.hasher = hasher;
+		this.github = github;
 	}
 
 	/**
@@ -149,12 +153,52 @@ export class AuthService {
 		}
 
 		const { hashed_password, salt } = user;
+		if (!hashed_password || !salt) {
+			throw new Error('Email used with GitHub sign in');
+		}
+
 		const validPassword = await this.hasher.verify(hashed_password, password + salt + PEPPER);
 		if (!validPassword) {
 			throw new Error('Invalid credentials');
 		}
 
 		return { user, sessionCookie: await this.createSession(user.id) };
+	}
+
+	/**
+	 * Signs in with GitHub
+	 * @param code to sign in with
+	 */
+	public async signInWithGitHub(code: string) {
+		const tokens = await this.github.validateAuthorizationCode(code);
+		const githubUserResponse = await fetch('https://api.github.com/user', {
+			headers: {
+				Authorization: `Bearer ${tokens.accessToken}`
+			}
+		});
+		const githubUser = await githubUserResponse.json();
+
+		const existingUser = await this.userRepo.findUserByGitHubId(githubUser.id);
+
+		let session: Cookie;
+		if (existingUser) {
+			session = await this.createSession(existingUser.id);
+		} else {
+			const userId = generateId(15);
+
+			await this.userRepo.save({
+				id: userId,
+				emailVerified: true,
+				prefferedCurrency: 'USD',
+				prefferedPeriod: 'month',
+				githubId: githubUser.id,
+				username: githubUser.login
+			});
+
+			session = await this.createSession(userId);
+		}
+
+		return session;
 	}
 
 	/**
@@ -177,6 +221,11 @@ export class AuthService {
 		}
 
 		const { hashed_password, salt } = user;
+
+		if (!hashed_password || !salt) {
+			throw new Error('Signed in with GitHub, cannot change password!');
+		}
+
 		const validPassword = await this.hasher.verify(
 			hashed_password,
 			currentPassword + salt + PEPPER
@@ -317,5 +366,6 @@ export default new AuthService(
 	UserRepositoryImpl,
 	EmailVerificationRepositoryImpl,
 	ResetPasswordRepositoryImpl,
-	new Argon2id()
+	new Argon2id(),
+	github
 );
