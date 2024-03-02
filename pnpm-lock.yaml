@@ -65,6 +65,9 @@ importers:
       dayjs:
         specifier: ^1.11.10
         version: 1.11.10
+      dotenv:
+        specifier: ^16.4.4
+        version: 16.4.4
       formsnap:
         specifier: ^0.4.3
         version: 0.4.3(svelte@4.2.7)(sveltekit-superforms@1.13.4)(zod@3.22.4)

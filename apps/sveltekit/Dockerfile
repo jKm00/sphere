@@ -42,11 +42,12 @@ COPY --from=builder /app/build build/
 COPY --from=builder /app/node_modules node_modules/
 COPY --from=builder /app/prisma prisma/
 COPY package.json .
-EXPOSE 3000
-ENV NODE_ENV=production
 
-COPY entrypoint.sh /app/entrypoint.sh
+COPY ./entrypoint.sh /app/entrypoint.sh
 
 RUN chmod +x /app/entrypoint.sh
+
+EXPOSE 3000
+ENV NODE_ENV=production
 
 ENTRYPOINT [ "/app/entrypoint.sh" ]

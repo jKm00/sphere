@@ -5,4 +5,4 @@
 npx prisma migrate deploy
 
 # Start application
-npm run prune --production
+ORIGIN="${ORIGIN}" node -r dotenv/config build
