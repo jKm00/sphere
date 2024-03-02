@@ -1,9 +1,8 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button';
 	import VerifyEmail from '$lib/components/forms/VerifyEmail.svelte';
-	import type { ActionData, PageData } from './$types';
+	import type { PageData } from './$types';
 	import { enhance } from '$app/forms';
-	import { toast } from 'svelte-sonner';
 
 	export let data: PageData;
 </script>
