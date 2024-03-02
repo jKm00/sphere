@@ -5,4 +5,4 @@
 npx prisma migrate deploy
 
 # Start application
-node build
+npm run prune --production

@@ -5,6 +5,7 @@
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
+		"db": "cd apps/db && docker compose up",
 		"prisma:generate": "cd apps/sveltekit && npx prisma generate",
 		"prisma:deploy": "cd apps/sveltekit && npx prisma migrate deploy"
 	},
