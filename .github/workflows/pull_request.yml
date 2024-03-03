@@ -26,4 +26,4 @@ jobs:
       - name: Generate prisma client
         run: pnpm prisma:generate
       - name: Run unit tests
-        run: pnpm --filter sveltekit test:unit
+        run: pnpm --filter sveltekit test:unit:cicd
