@@ -1,7 +1,7 @@
-name: Test pipeline
+name: Pull request pipeline
 
 on:
-  push:
+  pull_request:
     branches:
       - main
 
