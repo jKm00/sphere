@@ -17,8 +17,8 @@ _This is a monorepo_
 
 ```
 - apps          # All apps/service
-  - db          # Database (used for local development)
   - sveltekit   # Frontend application
+  - express     # Scheduler
 ```
 
 ## Getting started
@@ -30,11 +30,11 @@ _This is a monorepo_
 
 ### Step by Step
 
-1. Add `.env` file to all the apps (see `.env.example`)
-2. Run database
+1. Add `.env` file to the root and all the apps (see `.env.example`)
+2. Run local dev database
 
 ```
-pnpm db
+docker-compose -f docker-compose.dev.yml up --build
 ```
 
 3. Install dependencies

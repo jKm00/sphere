@@ -15,7 +15,7 @@
 </script>
 
 <form method="POST" action="?/verifyCode&redirectTo={redirect}" use:enhance>
-	<h1 class="text-center text-3xl font-bold">Please verify your email</h1>
+	<h1 class="text-3xl font-bold">Please verify your email</h1>
 	<p class="text-muted-foreground mb-4 text-center text-sm">
 		A code has been sent to your email. Please enter it below:
 	</p>
