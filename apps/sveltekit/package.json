@@ -13,7 +13,7 @@
 		"format": "prettier --write .",
 		"test:integration": "playwright test",
 		"test:unit": "vitest",
-		"test:unit:cicd": "vitest --no-threads"
+		"test:unit:cicd": "vitest --pool=forks"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.28.1",
