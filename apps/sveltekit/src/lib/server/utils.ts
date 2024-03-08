@@ -64,3 +64,7 @@ export const periodConversions = [
 		conversion: 1 / 12
 	}
 ];
+
+export const GOOGLE_OAUTH_STATE_COOKIE = 'google_oauth_state';
+export const GOOGLE_OAUTH_VERIFIER_COOKIE = 'google_oauth_code_verifier';
+export const GITHUB_OAUTH_STATE_COOKIE = 'github_oauth_state';

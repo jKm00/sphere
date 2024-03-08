@@ -25,10 +25,20 @@ class UserRepositoryImpl implements UserRepository {
 		});
 	}
 
-	public async findUserByGitHubId(id: number) {
+	public async findUserByProviderAndId(provider: string, id: string) {
 		return await this.db.user.findUnique({
 			where: {
-				githubId: id
+				providerId: provider,
+				providerUserId: id
+			}
+		});
+	}
+
+	public async findUserByProviderAndEmail(provider: string, email: string) {
+		return await this.db.user.findUnique({
+			where: {
+				providerId: provider,
+				email
 			}
 		});
 	}
@@ -41,7 +51,8 @@ class UserRepositoryImpl implements UserRepository {
 		email?: string | null;
 		hashed_password?: string | null;
 		salt?: string | null;
-		githubId?: number | null;
+		providerId?: string | null;
+		providerUserId: string | null;
 		username?: string | null;
 	}) {
 		return await this.db.user.upsert({

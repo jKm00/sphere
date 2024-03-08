@@ -4,14 +4,15 @@ import type { UserRepository } from '../repositories/UserRepository';
 import UserRepositoryImpl from '../repositories/UserRepositoryImpl';
 import { Argon2id } from 'oslo/password';
 import { Cookie, Lucia, generateId } from 'lucia';
-import { auth, github } from '../auth';
+import { auth, github, google } from '../auth';
 import type { EmailVerificationRepository } from '../repositories/EmailVerificationRepository';
 import EmailVerificationRepositoryImpl from '../repositories/EmailVerificationRepositoryImpl';
 import { TimeSpan, createDate } from 'oslo';
 import dayjs from 'dayjs';
 import type { ResetPasswordRepository } from '../repositories/ResetPasswordRepository';
 import ResetPasswordRepositoryImpl from '../repositories/ResetPasswordRepositoryImpl';
-import { GitHub } from 'arctic';
+import { GitHub, Google } from 'arctic';
+import type { GitHubUser, GoogleUser } from '$lib/dtos/user';
 
 export class AuthService {
 	private auth;
@@ -20,6 +21,7 @@ export class AuthService {
 	private resetPasswordRepo;
 	private hasher;
 	private github;
+	private google;
 
 	constructor(
 		auth: Lucia,
@@ -27,7 +29,8 @@ export class AuthService {
 		emailVerificationRepo: EmailVerificationRepository,
 		resetPasswordRepo: ResetPasswordRepository,
 		hasher: Argon2id,
-		github: GitHub
+		github: GitHub,
+		google: Google
 	) {
 		this.auth = auth;
 		this.userRepo = userRepo;
@@ -35,6 +38,7 @@ export class AuthService {
 		this.resetPasswordRepo = resetPasswordRepo;
 		this.hasher = hasher;
 		this.github = github;
+		this.google = google;
 	}
 
 	/**
@@ -63,10 +67,10 @@ export class AuthService {
 
 		return await this.userRepo.save({
 			id: userId,
-			email,
 			emailVerified: false,
 			prefferedCurrency: 'USD',
 			prefferedPeriod: 'month',
+			email,
 			hashed_password: hashedPassword,
 			salt
 		});
@@ -177,9 +181,9 @@ export class AuthService {
 				Authorization: `Bearer ${tokens.accessToken}`
 			}
 		});
-		const githubUser = await githubUserResponse.json();
+		const githubUser = (await githubUserResponse.json()) as GitHubUser;
 
-		const existingUser = await this.userRepo.findUserByGitHubId(githubUser.id);
+		const existingUser = await this.userRepo.findUserByProviderAndId('github', `${githubUser.id}`);
 
 		let session: Cookie;
 		if (existingUser) {
@@ -192,8 +196,51 @@ export class AuthService {
 				emailVerified: true,
 				prefferedCurrency: 'USD',
 				prefferedPeriod: 'month',
-				githubId: githubUser.id,
+				providerId: 'github',
+				providerUserId: `${githubUser.id}`,
 				username: githubUser.login
+			});
+
+			session = await this.createSession(userId);
+		}
+
+		return session;
+	}
+
+	public async signInWithGoogle(code: string, codeVerifier: string) {
+		const tokens = await this.google.validateAuthorizationCode(code, codeVerifier);
+		const googleUserReponse = await fetch('https://openidconnect.googleapis.com/v1/userinfo', {
+			headers: {
+				Authorization: `Bearer ${tokens.accessToken}`
+			}
+		});
+
+		const googleUser = (await googleUserReponse.json()) as GoogleUser;
+
+		if (!googleUser.email) {
+			throw new Error('No primary email address');
+		}
+
+		if (!googleUser.email_verified) {
+			throw new Error('Unverified email address');
+		}
+
+		const existingUser = await this.userRepo.findUserByProviderAndEmail('google', googleUser.email);
+
+		let session: Cookie;
+		if (existingUser) {
+			session = await this.createSession(existingUser.id);
+		} else {
+			const userId = generateId(15);
+
+			await this.userRepo.save({
+				id: userId,
+				emailVerified: true,
+				prefferedCurrency: 'USD',
+				prefferedPeriod: 'month',
+				providerId: 'google',
+				providerUserId: googleUser.sub,
+				email: googleUser.email
 			});
 
 			session = await this.createSession(userId);
@@ -368,5 +415,6 @@ export default new AuthService(
 	EmailVerificationRepositoryImpl,
 	ResetPasswordRepositoryImpl,
 	new Argon2id(),
-	github
+	github,
+	google
 );

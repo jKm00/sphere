@@ -1,11 +1,12 @@
 import AuthService from '$lib/server/services/AuthService';
 import { redirect } from 'sveltekit-flash-message/server';
 import type { RequestEvent } from './$types';
+import { GITHUB_OAUTH_STATE_COOKIE } from '$lib/server/utils';
 
 export async function GET(event: RequestEvent) {
 	const code = event.url.searchParams.get('code');
 	const state = event.url.searchParams.get('state');
-	const storedState = event.cookies.get('github_oauth_state');
+	const storedState = event.cookies.get(GITHUB_OAUTH_STATE_COOKIE);
 
 	if (!code || !state || !storedState || state !== storedState) {
 		return new Response(null, { status: 400 });

@@ -1,9 +1,15 @@
-import { GitHub } from 'arctic';
+import { GitHub, Google } from 'arctic';
 import { Lucia } from 'lucia';
 import { dev } from '$app/environment';
 import { PrismaAdapter } from '@lucia-auth/adapter-prisma';
 import { db } from './prisma';
-import { GITHUB_CLIENT, GITHUB_SECRET } from '$env/static/private';
+import {
+	APP_URL,
+	GITHUB_CLIENT,
+	GITHUB_SECRET,
+	GOOGLE_CLIENT,
+	GOOGLE_SECRET
+} from '$env/static/private';
 
 const client = db;
 const adapter = new PrismaAdapter(client.session, client.user);
@@ -37,3 +43,6 @@ declare module 'lucia' {
 }
 
 export const github = new GitHub(GITHUB_CLIENT, GITHUB_SECRET);
+
+const googleRedirect = `${APP_URL}/login/google/callback`;
+export const google = new Google(GOOGLE_CLIENT, GOOGLE_SECRET, googleRedirect);

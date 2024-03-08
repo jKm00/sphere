@@ -20,6 +20,11 @@
 			<span class="bg-primary h-[1px] flex-grow"></span>
 		</div>
 		<div class="grid gap-2">
+			<Button href="/login/google" class="flex justify-between px-3" variant="outline">
+				<img src="/icons/google.png" alt="Google icon" class="h-8" />
+				Google
+				<img src="/icons/google.png" alt="Google icon" class="h-8 opacity-0" />
+			</Button>
 			<Button href="/login/github" class="flex justify-between px-3" variant="outline">
 				<img src="/icons/github.png" alt="GitHub icon" class="h-8" />
 				GitHub

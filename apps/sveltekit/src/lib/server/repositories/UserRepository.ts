@@ -20,7 +20,15 @@ export interface UserRepository {
 	 * @param id of the user to return
 	 * @return given user or null if no user if found
 	 */
-	findUserByGitHubId(id: number): Promise<User | null>;
+	findUserByProviderAndId(provider: string, id: string): Promise<User | null>;
+
+	/**
+	 * Returns a user by the given provider and email
+	 * @param provider google or github
+	 * @param email of the user to return
+	 * @returns given user or null if no user is found
+	 */
+	findUserByProviderAndEmail(provider: string, email: string): Promise<User | null>;
 
 	/**
 	 * Saves the given user to the database
@@ -34,7 +42,8 @@ export interface UserRepository {
 		email?: string | null;
 		hashed_password?: string | null;
 		salt?: string | null;
-		githubId?: number | null;
+		providerId?: string | null;
+		providerUserId?: string | null;
 		username?: string | null;
 	}): Promise<User>;
 

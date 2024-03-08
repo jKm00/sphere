@@ -38,5 +38,15 @@ services:
       - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
       - POSTGRES_USER=${DATABASE_USER}
       - POSTGRES_DB=${DATABASE_DB}
+
+  proxy:
+    container_name: proxy
+    build:
+      context: apps/nginx/
+      dockerfile: Dockerfile
+    ports:
+      - 80:80
+      - 443:443
+
 volumes:
   postgres_data:
