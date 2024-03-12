@@ -13,6 +13,8 @@ ARG SMTP_USERNAME
 ARG SMTP_PASSWORD
 ARG GITHUB_CLIENT
 ARG GITHUB_SECRET
+ARG GOOGLE_CLIENT
+ARG GOOGLE_SECRET
 ARG SECRET_KEY
 ARG PEPPER
 ARG EXCHANGE_RATE_API_KEY
@@ -27,6 +29,8 @@ ENV APP_URL=${APP_URL} \
     SMTP_PASSWORD=${SMTP_PASSWORD} \
     GITHUB_CLIENT=${GITHUB_CLIENT} \
     GITHUB_SECRET=${GITHUB_SECRET} \
+    GOOGLE_CLIENT=${GOOGLE_CLIENT} \
+    GOOGLE_SECRET=${GOOGLE_SECRET} \
     SECRET_KEY=${SECRET_KEY} \
     PEPPER=${PEPPER} \
     EXCHANGE_RATE_API_KEY=${EXCHANGE_RATE_API_KEY} \
@@ -38,16 +42,19 @@ RUN npm prune --production
 
 FROM node:18-alpine
 WORKDIR /app
+
+# RUN apk add --no-cache bash
+
 COPY --from=builder /app/build build/
 COPY --from=builder /app/node_modules node_modules/
 COPY --from=builder /app/prisma prisma/
 COPY package.json .
 COPY entrypoint.sh .
 
-RUN chmod +x ./entrypoint.sh
+RUN chmod +x entrypoint.sh
 
 EXPOSE 3000
 ENV NODE_ENV=production
 
-CMD [ "ls" ]
-ENTRYPOINT [ "./entrypoint.sh" ]
+CMD [ "node", "build" ]
+# ENTRYPOINT [ "/app/entrypoint.sh" ]
