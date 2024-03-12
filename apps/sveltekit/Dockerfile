@@ -43,18 +43,12 @@ RUN npm prune --production
 FROM node:18-alpine
 WORKDIR /app
 
-# RUN apk add --no-cache bash
-
 COPY --from=builder /app/build build/
 COPY --from=builder /app/node_modules node_modules/
 COPY --from=builder /app/prisma prisma/
 COPY package.json .
-COPY entrypoint.sh .
-
-RUN chmod +x entrypoint.sh
 
 EXPOSE 3000
 ENV NODE_ENV=production
 
 CMD [ "node", "build" ]
-# ENTRYPOINT [ "/app/entrypoint.sh" ]
