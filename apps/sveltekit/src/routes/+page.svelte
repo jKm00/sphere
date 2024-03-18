@@ -20,7 +20,7 @@
 			<span class="bg-primary h-[1px] flex-grow"></span>
 		</div>
 		<div class="grid gap-2">
-			<Button href="/login/google" class="flex justify-between px-3" variant="outline">
+			<Button disabled class="flex justify-between overflow-hidden px-3" variant="outline">
 				<img src="/icons/google.png" alt="Google icon" class="h-8" />
 				Google
 				<img src="/icons/google.png" alt="Google icon" class="h-8 opacity-0" />
