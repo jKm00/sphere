@@ -33,6 +33,7 @@ export const actions: Actions = {
 
 		// Disallow form spam
 		if (await limiter.isLimited(event)) {
+			console.log(limiter);
 			return message(form, 'Too many tries. Please wait before trying again!', {
 				status: 429
 			});
@@ -44,8 +45,11 @@ export const actions: Actions = {
 			// Try to create user
 			const user = await AuthService.createUser(email, password);
 			// Send verification email
-			const verificationCode = await AuthService.generateEmailVerificationCode(user.id, user.email);
-			await EmailService.sendVerificationEmail(user.email, verificationCode);
+			const verificationCode = await AuthService.generateEmailVerificationCode(
+				user.id,
+				user.email!
+			);
+			await EmailService.sendVerificationEmail(user.email!, verificationCode);
 
 			const sessionCookie = await AuthService.createSession(user.id);
 			event.cookies.set(sessionCookie.name, sessionCookie.value, {
