@@ -5,19 +5,18 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const app: Express = express();
-const port = 3000;
+const port = 5000;
 
 let scheduledTask: cron.ScheduledTask;
 
 app.listen(port, async () => {
-	// TODO: Schedule once a day
-	scheduledTask = cron.schedule('*/5 * * * * *', async () => {
+	scheduledTask = cron.schedule('0 0 * * *', async () => {
+		console.log('Running scheduled task');
 		try {
 			const res = await fetch(
 				`${process.env.SVELTEKIT_URL}/api/v1/fetch-exchange-rates?API_KEY=${process.env.API_KEY}`
 			);
 			const data = await res.json();
-
 			if (res.status === 200) {
 				console.log(`Success: ${new Date().toString()}`);
 			} else {
