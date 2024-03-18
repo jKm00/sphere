@@ -61,6 +61,32 @@ pnpm prisma:deploy
 pnpm --filter sveltekit dev
 ```
 
+## Deployment (temp solution)
+
+1. Log into vm
+
+```
+ssh opc@<ip> -i <path/to/key>
+```
+
+2. CD to the correct directory
+
+```
+cd sphere/
+```
+
+3. Pull new changes
+
+```
+git pull
+```
+
+4. Restart containers
+
+```
+docker compose up --build -d
+```
+
 ## Prisma Commands
 
 ### Create a migration
