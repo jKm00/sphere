@@ -69,14 +69,15 @@ export const actions = {
 			redirect(302, '/login');
 		}
 
-		if (await limiter.isLimited(event)) {
-			return redirect(
-				302,
-				'/verify-email',
-				{ type: 'error', message: 'Too many requests. Please try again later.' },
-				event
-			);
-		}
+		// TODO: Fix rate limiter
+		// if (await limiter.isLimited(event)) {
+		// 	return redirect(
+		// 		302,
+		// 		'/verify-email',
+		// 		{ type: 'error', message: 'Too many requests. Please try again later.' },
+		// 		event
+		// 	);
+		// }
 
 		const user = event.locals.user;
 

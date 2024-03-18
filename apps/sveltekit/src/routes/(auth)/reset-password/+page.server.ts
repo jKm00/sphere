@@ -28,9 +28,10 @@ export const actions = {
 			return fail(400, { form });
 		}
 
-		if (await limiter.isLimited(event)) {
-			return message(form, 'Too many requests', { status: 429 });
-		}
+		// TODO: Fix rate limiter
+		// if (await limiter.isLimited(event)) {
+		// 	return message(form, 'Too many requests', { status: 429 });
+		// }
 
 		const { email } = form.data;
 

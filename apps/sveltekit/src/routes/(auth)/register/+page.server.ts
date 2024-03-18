@@ -31,13 +31,13 @@ export const actions: Actions = {
 			});
 		}
 
+		// TODO: Fix rate limiter
 		// Disallow form spam
-		if (await limiter.isLimited(event)) {
-			console.log(limiter);
-			return message(form, 'Too many tries. Please wait before trying again!', {
-				status: 429
-			});
-		}
+		// if (await limiter.isLimited(event)) {
+		// 	return message(form, 'Too many tries. Please wait before trying again!', {
+		// 		status: 429
+		// 	});
+		// }
 
 		const { email, password } = form.data;
 
