@@ -6,6 +6,7 @@ COPY . .
 
 # Build-time env variables
 ARG APP_URL
+ARG ORIGIN
 ARG DATABASE_URL
 ARG SMTP_HOST
 ARG SMTP_PORT
@@ -22,6 +23,7 @@ ARG CRON_JOB_SECRET
 
 # Set env variables
 ENV APP_URL=${APP_URL} \
+    ORIGIN=${ORIGIN} \
     DATABASE_URL=${DATABASE_URL} \
     SMTP_HOST=${SMTP_HOST} \
     SMTP_PORT=${SMTP_PORT} \
@@ -48,7 +50,11 @@ COPY --from=builder /app/node_modules node_modules/
 COPY --from=builder /app/prisma prisma/
 COPY package.json .
 
+COPY entrypoint.sh .
+RUN chmod +x entrypoint.sh
+
 EXPOSE 3000
 ENV NODE_ENV=production
 
-CMD [ "node", "build" ]
+ENTRYPOINT [ "/app/entrypoint.sh" ]
+# CMD [ "node", "build" ]
