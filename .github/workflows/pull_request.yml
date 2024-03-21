@@ -39,6 +39,6 @@ jobs:
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.VM_KEY }}
           script: |
-            cd /sphere
+            cd ./sphere/
             git pull
             docker-compose up --build -d
