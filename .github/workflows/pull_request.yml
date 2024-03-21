@@ -27,18 +27,3 @@ jobs:
         run: pnpm prisma:generate
       - name: Run unit tests
         run: pnpm --filter sveltekit test:unit:cicd
-
-  deploy:
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v3
-      - name: Deploy to VM
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.VM_HOST }}
-          username: ${{ secrets.VM_USER }}
-          key: ${{ secrets.VM_KEY }}
-          script: |
-            cd ./sphere/
-            git pull
-            docker-compose up --build -d
