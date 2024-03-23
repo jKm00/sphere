@@ -26,7 +26,7 @@
 </script>
 
 <ModeWatcher />
-<Toaster position="top-center" closeButton richColors />
+<Toaster position="bottom-right" closeButton richColors />
 
 <div class="flex min-h-screen flex-col">
 	<slot />
